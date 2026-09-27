@@ -24,80 +24,80 @@ Documento de control y seguimiento de requisitos para el Grupo 3 (G3). Permite m
 ### Fase 1: Investigación del Estilo y Stack
 
 #### 1.1. Estilo Arquitectónico (Clean Architecture)
-- [ ] Definición clara (qué es y qué no es).
-- [ ] Clasificación del estilo (estructural, separación de intereses, puertos y adaptadores).
-- [ ] Características principales (independencia de frameworks, UI, DB, alta testabilidad).
-- [ ] Historia y evolución (Uncle Bob 2012, Hexagonal 2005, Onion 2008).
-- [ ] Ventajas y desventajas.
-- [ ] Problemas comunes que se presentan y soluciones/patrones (fuga de infraestructura -> DTOs; acoplamiento -> Inyección de Dependencias).
-- [ ] Identificar patrones aplicables y cuándo usarlos (Patrón Repositorio, Patrón Caso de Uso/Interactor).
-- [ ] Casos de uso (cuándo usarlo y cuándo no).
-- [ ] Casos de aplicación en la industria real (FinTech: Nubank, Revolut, N26).
+- [x] Definición clara (qué es y qué no es).
+- [x] Clasificación del estilo (estructural, separación de intereses, puertos y adaptadores).
+- [x] Características principales (independencia de frameworks, UI, DB, alta testabilidad).
+- [x] Historia y evolución (Uncle Bob 2012, Hexagonal 2005, Onion 2008).
+- [x] Ventajas y desventajas.
+- [x] Problemas comunes que se presentan y soluciones/patrones (fuga de infraestructura -> DTOs; acoplamiento -> Inyección de Dependencias).
+- [x] Identificar patrones aplicables y cuándo usarlos (Patrón Repositorio, Patrón Caso de Uso/Interactor).
+- [x] Casos de uso (cuándo usarlo y cuándo no).
+- [x] Casos de aplicación en la industria real (FinTech: Nubank, Revolut, N26).
 
 #### 1.2. Tecnologías del Stack Asignado
-- [ ] Frontend: Electron + Python (Eel)
-  - [ ] Definición clara (qué es y qué no es).
-  - [ ] Características principales.
-  - [ ] Historia y evolución.
-  - [ ] Ventajas y desventajas.
-  - [ ] Casos de uso (cuándo sí y cuándo no).
-  - [ ] Casos de aplicación en la industria.
-- [ ] Backend: Ruby on Rails (Modo API)
-  - [ ] Definición clara (qué es y qué no es).
-  - [ ] Características principales.
-  - [ ] Historia y evolución.
-  - [ ] Ventajas y desventajas.
-  - [ ] Casos de uso (cuándo sí y cuándo no).
-  - [ ] Casos de aplicación en la industria.
-- [ ] Persistencia: Redis (In-Memory Engine)
-  - [ ] Definición clara (qué es y qué no es).
-  - [ ] Características principales.
-  - [ ] Historia y evolución.
-  - [ ] Ventajas y desventajas.
-  - [ ] Casos de uso (cuándo sí y cuándo no).
-  - [ ] Casos de aplicación en la industria.
-- [ ] Protocolo de Integración: WebSockets
-  - [ ] Definición clara (qué es y qué no es).
-  - [ ] Características principales.
-  - [ ] Historia y evolución.
-  - [ ] Ventajas y desventajas.
-  - [ ] Casos de uso (cuándo sí y cuándo no).
-  - [ ] Casos de aplicación en la industria.
+- [x] Frontend: Electron + Python (Eel)
+  - [x] Definición clara (qué es y qué no es).
+  - [x] Características principales.
+  - [x] Historia y evolución.
+  - [x] Ventajas y desventajas.
+  - [x] Casos de uso (cuándo sí y cuándo no).
+  - [x] Casos de aplicación en la industria.
+- [x] Backend: Ruby on Rails (Modo API)
+  - [x] Definición clara (qué es y qué no es).
+  - [x] Características principales.
+  - [x] Historia y evolución.
+  - [x] Ventajas y desventajas.
+  - [x] Casos de uso (cuándo sí y cuándo no).
+  - [x] Casos de aplicación en la industria.
+- [x] Persistencia: Redis (In-Memory Engine)
+  - [x] Definición clara (qué es y qué no es).
+  - [x] Características principales.
+  - [x] Historia y evolución.
+  - [x] Ventajas y desventajas.
+  - [x] Casos de uso (cuándo sí y cuándo no).
+  - [x] Casos de aplicación en la industria.
+- [x] Protocolo de Integración: WebSockets
+  - [x] Definición clara (qué es y qué no es).
+  - [x] Características principales.
+  - [x] Historia y evolución.
+  - [x] Ventajas y desventajas.
+  - [x] Casos de uso (cuándo sí y cuándo no).
+  - [x] Casos de aplicación en la industria.
 
 #### 1.3. Relación entre Estilo, Tecnologías y Mercado
-- [ ] Relación entre el estilo arquitectónico y las tecnologías seleccionadas.
-- [ ] Análisis de qué tan común es el stack asignado (relación entre tecnologías en el mercado).
-- [ ] Comandos de creación, estructura de archivos y manejo de variables de entorno (.env).
+- [x] Relación entre el estilo arquitectónico y las tecnologías seleccionadas.
+- [x] Análisis de qué tan común es el stack asignado (relación entre tecnologías en el mercado).
+- [x] Comandos de creación, estructura de archivos y manejo de variables de entorno (.env).
 
 ---
 
 ### Fase 2: Análisis Arquitectónico (Matrices Obligatorias)
 
-- [ ] Matriz 1: Atributos de Calidad vs Estilo (Mantenibilidad, Testabilidad, Modificabilidad, Rendimiento, Simplicidad).
-- [ ] Matriz 2: Principios vs Estilo
-  - [ ] SOLID (SRP, OCP, LSP, ISP, DIP).
-  - [ ] KISS (Keep It Simple, Stupid).
-  - [ ] DRY (Don't Repeat Yourself).
-  - [ ] YAGNI (You Aren't Gonna Need It).
-  - [ ] PoLA (Principle of Least Astonishment).
-  - [ ] Ley de Demeter.
-  - [ ] Prevención de antipatrones STUPID.
-  - [ ] Composición sobre Herencia.
-- [ ] Matriz 3: Tácticas vs Estilo y Stack (Justificación formal de un ADR para Concurrencia y Rendimiento en tiempo real).
-- [ ] Matriz 4: Mercado Laboral vs Estilo y Stack (Demanda actual, proyección a 5 años, salarios anuales y mensuales en USD citando fuentes formales como StackOverflow 2024, GitHub y Hired).
+- [x] Matriz 1: Atributos de Calidad vs Estilo (Mantenibilidad, Testabilidad, Modificabilidad, Rendimiento, Simplicidad).
+- [x] Matriz 2: Principios vs Estilo
+  - [x] SOLID (SRP, OCP, LSP, ISP, DIP).
+  - [x] KISS (Keep It Simple, Stupid).
+  - [x] DRY (Don't Repeat Yourself).
+  - [x] YAGNI (You Aren't Gonna Need It).
+  - [x] PoLA (Principle of Least Astonishment).
+  - [x] Ley de Demeter.
+  - [x] Prevención de antipatrones STUPID.
+  - [x] Composición sobre Herencia.
+- [x] Matriz 3: Tácticas vs Estilo y Stack (Justificación formal de un ADR para Concurrencia y Rendimiento en tiempo real).
+- [x] Matriz 4: Mercado Laboral vs Estilo y Stack (Demanda actual, proyección a 5 años, salarios anuales y mensuales en USD citando fuentes formales como StackOverflow 2024, GitHub y Hired).
 
 ---
 
 ### Fase 3: Diseño del Sistema (Modelo C4 y Modelo de Datos)
 
-- [ ] Modelo de Datos formal con mínimo 3 entidades de negocio interrelacionadas (`POLL`, `OPTION`, `VOTE`).
-- [ ] Mapeo de persistencia de las entidades en estructuras de datos de Redis (Hashes y Sets con operaciones O(1)).
-- [ ] Diagrama de Alto Nivel (HLD) con sus bloques y protocolos definidos.
-- [ ] Diagrama de Contexto (C4 Nivel 1) con actores y delimitación del sistema.
-- [ ] Diagrama de Contenedores (C4 Nivel 2) con contenedores, tecnologías y protocolos TCP/puertos.
-- [ ] Diagrama Dinámico (Flujo Principal de Secuencia end-to-end de 10 pasos con bifurcaciones de error y éxito).
-- [ ] Diagrama de Despliegue (C4 Deployment) con Host OS, Docker Engine, Contenedores y puertos.
-- [ ] Guía y estructura lógica paso a paso para dibujar todos los diagramas a mano o en diapositivas.
+- [x] Modelo de Datos formal con mínimo 3 entidades de negocio interrelacionadas (`POLL`, `OPTION`, `VOTE`).
+- [x] Mapeo de persistencia de las entidades en estructuras de datos de Redis (Hashes y Sets con operaciones O(1)).
+- [x] Diagrama de Alto Nivel (HLD) con sus bloques y protocolos definidos.
+- [x] Diagrama de Contexto (C4 Nivel 1) con actores y delimitación del sistema.
+- [x] Diagrama de Contenedores (C4 Nivel 2) con contenedores, tecnologías y protocolos TCP/puertos.
+- [x] Diagrama Dinámico (Flujo Principal de Secuencia end-to-end de 10 pasos con bifurcaciones de error y éxito).
+- [x] Diagrama de Despliegue (C4 Deployment) con Host OS, Docker Engine, Contenedores y puertos.
+- [x] Guía y estructura lógica paso a paso para dibujar todos los diagramas a mano o en diapositivas.
 
 ---
 
@@ -143,17 +143,17 @@ Documento de control y seguimiento de requisitos para el Grupo 3 (G3). Permite m
 - [ ] Creación del Release formal en GitHub asociado al TAG.
 
 #### 5.2. Documento Técnico
-- [ ] Sección 1: Investigación completa del estilo y cada tecnología del stack.
-- [ ] Sección 2: Matrices de análisis arquitectónico (Atributos, Principios, Tácticas/ADR, Mercado laboral).
-- [ ] Sección 3: Diseño y modelado arquitectónico con guía paso a paso de diagramas y modelo de datos.
-- [ ] Sección 4: Guía técnica de implementación y fragmentos de código desacoplado.
-- [ ] Sección 5: Lecciones aprendidas documentadas.
+- [x] Sección 1: Investigación completa del estilo y cada tecnología del stack.
+- [x] Sección 2: Matrices de análisis arquitectónico (Atributos, Principios, Tácticas/ADR, Mercado laboral).
+- [x] Sección 3: Diseño y modelado arquitectónico con guía paso a paso de diagramas y modelo de datos.
+- [x] Sección 4: Guía técnica de implementación y fragmentos de código desacoplado.
+- [x] Sección 5: Lecciones aprendidas documentadas.
 
 #### 5.3. Archivo README.md
-- [ ] Descripción clara del sistema (DecisionRoom G3).
-- [ ] Listado de tecnologías usadas y roles.
-- [ ] Pasos detallados y reproducibles para el despliegue con Docker Compose y ejecución del cliente Python.
-- [ ] Enlace directo al documento técnico.
+- [x] Descripción clara del sistema (DecisionRoom G3).
+- [x] Listado de tecnologías usadas y roles.
+- [x] Pasos detallados y reproducibles para el despliegue con Docker Compose y ejecución del cliente Python.
+- [x] Enlace directo al documento técnico.
 
 #### 5.4. Presentación Oral e Infografías
 - [ ] Diapositivas preparadas con estructura fluida y paleta de colores sobria.
