@@ -14,93 +14,74 @@
 
 ### 1.1. Estilo Arquitectónico: Clean Architecture
 
-**Definición clara (qué es y qué no es)**
-Clean Architecture (Arquitectura Limpia) es una filosofía de diseño de software introducida por Robert C. Martin (Uncle Bob) que busca separar las responsabilidades del sistema en capas concéntricas, aislando las reglas de negocio de las dependencias externas (frameworks, bases de datos, UI). 
-*Qué no es:* No es un framework, ni una plantilla estricta de código, ni garantiza por sí sola un buen rendimiento; es un conjunto de principios para organizar las dependencias.
-
-**Clasificación del estilo**
-Se clasifica como un estilo arquitectónico **estructural y de separación de intereses (Separation of Concerns)**. Pertenece a la familia de arquitecturas de capas y arquitecturas de puertos y adaptadores (Hexagonal, Onion Architecture).
-
-**Características principales**
-*   **Independencia de Frameworks:** La arquitectura no depende de la existencia de librerías de terceros.
-*   **Testabilidad:** Las reglas de negocio (casos de uso) pueden probarse sin la UI, la base de datos o cualquier otro elemento externo.
-*   **Independencia de la UI:** La interfaz de usuario puede cambiar fácilmente (ej. de web a consola) sin alterar el resto del sistema.
-*   **Independencia de la Base de Datos:** Puedes cambiar de Oracle o SQL Server a Mongo o Redis; las reglas de negocio no están ligadas a la base de datos.
-*   **Independencia de Agentes Externos:** Las reglas de negocio simplemente no saben nada en absoluto del mundo exterior.
-
-**Historia y evolución**
-Evolucionó de conceptos previos de separación arquitectónica planteados en los 90s y 2000s, como la Hexagonal Architecture (Alistair Cockburn, 2005) y la Onion Architecture (Jeffrey Palermo, 2008). Robert C. Martin consolidó estas ideas en 2012 bajo el término "Clean Architecture" para unificar las similitudes de estos patrones en un modelo concéntrico único centrado en la "Regla de Dependencia".
-
-**Ventajas y desventajas**
-*   **Ventajas:** Alta mantenibilidad, testabilidad profunda, flexibilidad para cambiar tecnologías externas, reducción de deuda técnica a largo plazo, escalabilidad del equipo.
-*   **Desventajas:** Alta curva de aprendizaje, sobreingeniería para proyectos pequeños (MVPs), mayor verbosidad (requiere crear muchos archivos, interfaces y DTOs), puede ralentizar el desarrollo inicial.
-
-**Problemas comunes que se presentan y patrones**
-*   **Problema:** Fuga de detalles de infraestructura hacia el dominio (ej. usar objetos de la BD en las vistas).
-    *   **Patrón:** Data Transfer Objects (DTOs) y Mapeadores.
-*   **Problema:** Acoplamiento directo a la base de datos.
-    *   **Patrón:** Patrón Repository (Inversión de Dependencias).
-*   **Problema:** Instanciación compleja de dependencias a lo largo de las capas.
-    *   **Patrón:** Inyección de Dependencias (Dependency Injection Container).
-
-**Identificar patrones aplicables y cuándo usarlos**
-*   **Inyección de Dependencias:** Usar siempre para suministrar repositorios y servicios externos a los Casos de Uso.
-*   **Patrón Repositorio:** Usar para abstraer las operaciones de Redis, permitiendo que la capa de dominio defina la interfaz y la capa de infraestructura la implemente.
-*   **Patrón Observer / PubSub:** Aplicable para manejar la integración con WebSockets (ActionCable) y notificar en tiempo real cuando cambia el estado.
-
-**Casos de uso (cuándo usarlo y cuándo no)**
-*   **Cuándo usarlo:** Sistemas Enterprise, proyectos a largo plazo con lógicas de negocio complejas, sistemas que prevén cambios de tecnología o plataformas en el futuro, o proyectos con grandes equipos de desarrollo.
-*   **Cuándo no usarlo:** Proyectos cortos o MVPs, pruebas de concepto, aplicaciones CRUD muy simples donde un patrón MVC tradicional en un framework maduro (como el estándar de Rails) es suficiente y más rápido.
-
-**Casos de aplicación (ejemplos reales en la industria)**
-Empresas como Uber, Netflix y N26 aplican variantes de Clean Architecture (y arquitecturas hexagonales) en sus microservicios de backend para aislar su compleja lógica de enrutamiento, pagos o streaming, permitiéndoles migrar bases de datos (ej. de SQL a NoSQL o Redis) sin reescribir todo el dominio de la aplicación.
+*   **Definición clara (qué es y qué no es)**
+    *   *Qué es:* Es un modelo de diseño de software que estructura el sistema en capas concéntricas, garantizando que el dominio y las reglas de negocio permanezcan en el núcleo, aislados de los detalles de infraestructura. Su pilar es la "Regla de Dependencia", la cual dicta que las dependencias del código fuente siempre deben apuntar hacia el centro.
+    *   *Qué NO es:* No es un framework, ni un patrón de diseño a nivel de clases (como Singleton o Factory), ni prescribe una estructura de directorios obligatoria. Es estrictamente un paradigma arquitectónico para la gestión de dependencias.
+*   **Clasificación del estilo**
+    Se clasifica como un estilo arquitectónico **estructural** y pertenece a la familia de arquitecturas basadas en la *Separación de Intereses (Separation of Concerns)* y *Puertos y Adaptadores*, siendo una evolución de la Arquitectura Hexagonal y la Onion Architecture.
+*   **Características principales**
+    Garantiza independencia de frameworks, de la interfaz de usuario y de las bases de datos. Asimismo, fomenta una alta testabilidad, permitiendo ejecutar pruebas unitarias sobre la lógica de negocio sin requerir bases de datos o servidores web activos.
+*   **Historia y evolución**
+    Fue formalizada en 2012 por Robert C. Martin ("Uncle Bob"). Surgió como respuesta a los problemas de mantenimiento generados por arquitecturas altamente acopladas a la base de datos o al framework web, consolidando los principios introducidos previamente por la Arquitectura Hexagonal (Alistair Cockburn, 2005) y la Onion Architecture (Jeffrey Palermo, 2008).
+*   **Ventajas y desventajas**
+    *   *Ventajas:* Alta mantenibilidad y extensibilidad a largo plazo. Permite la sustitución de componentes tecnológicos (como migrar de una base de datos relacional a una en memoria) sin alterar el núcleo del negocio.
+    *   *Desventajas:* Curva de aprendizaje elevada. Genera complejidad accidental y verbosidad en etapas tempranas debido a la necesidad de crear interfaces, mapeadores y DTOs, lo que retrasa el *Time to Market* inicial.
+*   **Problemas comunes que se presentan y patrones**
+    El problema más frecuente es la filtración de detalles de infraestructura hacia el dominio (ej. modelos del ORM viajando a las vistas). Para mitigar esto, se emplea el patrón **DTO (Data Transfer Object)**. Otro problema es el alto acoplamiento en la instanciación, el cual se resuelve mediante la **Inyección de Dependencias (IoC)**.
+*   **Identificar patrones aplicables y cuándo usarlos**
+    *   *Inyección de Dependencias:* Se aplica sistemáticamente para proveer las implementaciones de repositorios y servicios externos a los Casos de Uso.
+    *   *Patrón Repositorio:* Se utiliza para abstraer la persistencia subyacente (Redis), exponiendo contratos (interfaces) que el dominio comprende, sin exponer la tecnología específica.
+*   **Casos de uso (cuándo usarlo y cuándo no)**
+    *   *Cuándo usarlo:* En sistemas de nivel empresarial (Enterprise), dominios de negocio complejos, y proyectos con expectativa de vida prolongada donde la tecnología externa sea susceptible a cambios.
+    *   *Cuándo no usarlo:* En prototipos rápidos (MVPs), aplicaciones de vida corta, o sistemas CRUD simples donde el uso de un patrón MVC tradicional ofrece suficiente robustez con menor costo de desarrollo.
+*   **Casos de aplicación (ejemplos reales en la industria)**
+    Adoptado frecuentemente en el sector FinTech (ej. N26, Nubank) y en la arquitectura de microservicios de plataformas de alto tráfico (ej. Netflix, Uber), donde el aislamiento de la lógica core permite realizar actualizaciones de infraestructura sin interrumpir las transacciones comerciales.
 
 ### 1.2. Tecnologías del Stack Asignado
 
 #### Frontend: Electron + Python (Eel)
-*   **Definición:** Electron es un framework para crear aplicaciones de escritorio nativas usando tecnologías web (HTML, CSS, JS). Eel es una librería de Python que levanta interfaces de usuario usando Chromium/Electron, permitiendo que la lógica resida completamente en Python en lugar de JavaScript.
-*   **Características principales:** Multiplataforma (Windows, Mac, Linux), acceso a APIs nativas del sistema operativo, puente bidireccional entre UI y backend (en este caso, Python).
-*   **Historia y evolución:** Electron fue creado por GitHub en 2013 para construir el editor Atom. Eel surgió como una alternativa moderna para desarrolladores Python que deseaban interfaces gráficas web sin lidiar con frameworks anticuados como Tkinter.
-*   **Ventajas y desventajas:** 
-    *   *Ventajas:* Reutilización de conocimiento web, despliegue en múltiples OS, integración profunda con el ecosistema de IA/Datos de Python.
-    *   *Desventajas:* Alto consumo de memoria RAM (levanta un navegador completo), peso del ejecutable.
-*   **Casos de uso:** Herramientas internas, dashboards de datos, IDEs (VS Code usa Electron). No usar para apps de rendimiento crítico (ej. videojuegos 3D intensivos).
-*   **Casos de aplicación:** Slack, Discord, WhatsApp Desktop (Electron).
-*   **Relación Electron + Python (Eel):** Permite aislar completamente la vista (HTML/CSS) de la lógica de negocio (Python), cumpliendo con Clean Architecture de manera estricta al evitar la mezcla de código JS en las vistas.
+*   **Definición clara (qué es y qué no es):** 
+    *   *Qué es:* Electron es un framework para construir aplicaciones de escritorio nativas utilizando tecnologías web. Eel es una biblioteca que sirve de puente entre Python y el motor de Chromium, permitiendo gestionar la interfaz web directamente desde el backend en Python.
+    *   *Qué NO es:* No es un entorno para publicar páginas web públicas, ni genera ejecutables en código máquina nativo (como C++); su núcleo ejecuta una instancia embebida de un navegador.
+*   **Características principales:** Es multiplataforma (Windows, macOS, Linux) y otorga acceso a recursos locales del sistema operativo. En este contexto, permite prescindir del uso de JavaScript para la lógica de presentación.
+*   **Historia y evolución:** Electron fue desarrollado por GitHub en 2013 como base para el editor Atom. Eel surgió posteriormente para cubrir la necesidad de los desarrolladores de Python de crear interfaces gráficas modernas, superando las limitaciones visuales de librerías tradicionales como Tkinter.
+*   **Ventajas y desventajas:** Su principal ventaja es la reutilización del ecosistema web (HTML/CSS) combinado con la potencia de procesamiento de Python. Su mayor desventaja es el alto consumo de recursos (memoria RAM) debido al motor de Chromium embebido.
+*   **Casos de uso (cuándo usarlo y cuándo no):** Recomendado para herramientas internas corporativas, dashboards analíticos y editores de código. No es adecuado para aplicaciones que requieran un consumo mínimo de memoria o gráficos 3D intensivos.
+*   **Casos de aplicación:** Plataformas de comunicación como Slack, Discord y WhatsApp Desktop, y editores como Visual Studio Code.
 
-#### Backend: Ruby on Rails (Ruby)
-*   **Definición:** Un framework de aplicaciones web del lado del servidor escrito en Ruby bajo el paradigma MVC (Modelo-Vista-Controlador).
-*   **Características principales:** Convención sobre Configuración (CoC), Don't Repeat Yourself (DRY), patrón ActiveRecord, y gemas extensibles.
-*   **Historia y evolución:** Creado por David Heinemeier Hansson (DHH) en 2003 durante su trabajo en Basecamp. Revolucionó el desarrollo web por su velocidad de prototipado.
-*   **Ventajas y desventajas:** 
-    *   *Ventajas:* Alta velocidad de desarrollo, comunidad madura, excelente para MVPs.
-    *   *Desventajas:* Menor rendimiento en bruto frente a lenguajes compilados, alto acoplamiento a su propio ORM (ActiveRecord) lo que desafía a Clean Architecture.
-*   **Casos de uso:** Startups, sistemas e-commerce, APIs RESTful, plataformas SaaS.
-*   **Casos de aplicación:** GitHub, Shopify, Airbnb, Twitch.
+#### Backend: Ruby on Rails
+*   **Definición clara (qué es y qué no es):** 
+    *   *Qué es:* Es un framework de desarrollo web en el lado del servidor, escrito en Ruby y estructurado bajo el paradigma Modelo-Vista-Controlador (MVC).
+    *   *Qué NO es:* No es un lenguaje de programación independiente ni un Sistema de Gestión de Contenidos (CMS) autoinstalable.
+*   **Características principales:** Promueve los principios de "Convención sobre Configuración" (CoC) y "No te repitas" (DRY), agilizando el desarrollo al tomar decisiones arquitectónicas por defecto.
+*   **Historia y evolución:** Creado por David Heinemeier Hansson (DHH) en 2003 durante el desarrollo de Basecamp. Popularizó el desarrollo ágil de aplicaciones web y estandarizó múltiples convenciones modernas.
+*   **Ventajas y desventajas:** Destaca por su extrema velocidad para construir aplicaciones funcionales. Su desventaja en contextos de Clean Architecture es su tendencia al acoplamiento profundo (especialmente mediante ActiveRecord), exigiendo un esfuerzo adicional para separar el dominio del framework.
+*   **Casos de uso (cuándo usarlo y cuándo no):** Ideal para Startups, plataformas SaaS y APIs RESTful de rápido crecimiento. Menos idóneo para procesos de Machine Learning o procesamiento paralelo masivo.
+*   **Casos de aplicación:** Plataformas globales como GitHub, Shopify, Twitch y Airbnb (en sus inicios).
 
 #### Persistencia: Redis
-*   **Definición:** Es un almacén de estructuras de datos en memoria de código abierto, usado como base de datos, caché y message broker.
-*   **Características principales:** Almacenamiento clave-valor, altísimo rendimiento (milisegundos), soporte para estructuras de datos complejas (Listas, Sets, Hashes, Pub/Sub).
-*   **Historia y evolución:** Creado por Salvatore Sanfilippo en 2009 para mejorar los tiempos de carga de su startup de analíticas web.
-*   **Ventajas y desventajas:** 
-    *   *Ventajas:* Velocidad extrema, facilidad de uso, escalabilidad.
-    *   *Desventajas:* Los datos residen en la RAM (más cara que el disco duro), no es ideal para datos relacionales complejos o grandes volúmenes de datos históricos inactivos.
-*   **Casos de uso:** Tableros de posiciones (Leaderboards) en tiempo real, manejo de sesiones, cachés, Pub/Sub.
-*   **Casos de aplicación:** Twitter (para armar timelines en tiempo real), StackOverflow, Pinterest.
+*   **Definición clara (qué es y qué no es):** 
+    *   *Qué es:* Es un motor de estructura de datos en memoria (In-Memory), de código abierto, empleado como base de datos, caché y bróker de mensajes.
+    *   *Qué NO es:* No es una base de datos relacional, carece de soporte para sentencias SQL complejas y no está diseñado como almacenamiento primario persistente en disco para datos históricos masivos.
+*   **Características principales:** Estructura basada en clave-valor, tiempos de respuesta submilimétricos y soporte integral para arquitecturas guiadas por eventos mediante el patrón de Publicación/Suscripción (Pub/Sub).
+*   **Historia y evolución:** Desarrollado en 2009 por Salvatore Sanfilippo ante la necesidad de mejorar el rendimiento en tiempo real de su plataforma de analíticas web, superando las latencias de las bases de datos en disco.
+*   **Ventajas y desventajas:** Proporciona un rendimiento insuperable para operaciones de lectura/escritura. Su limitación principal es el costo operativo, dado que el almacenamiento en RAM es significativamente más caro que el almacenamiento en disco.
+*   **Casos de uso (cuándo usarlo y cuándo no):** Óptimo para tableros de puntuación en vivo (Leaderboards), gestión de sesiones web, votaciones en tiempo real y cachés de alta velocidad. No debe usarse como única fuente de verdad para datos transaccionales críticos de largo plazo (como registros contables).
+*   **Casos de aplicación:** Arquitecturas de tiempo real en empresas como Twitter, Pinterest y StackOverflow.
 
-#### Protocolo de Integración: WebSockets
-*   **Definición:** Un protocolo de comunicación que proporciona canales bidireccionales y full-duplex sobre una única conexión TCP de larga duración.
-*   **Características principales:** Baja latencia, persistencia de conexión, comunicación orientada a eventos.
-*   **Historia y evolución:** Estandarizado en 2011 (RFC 6455) para superar las limitaciones de HTTP (polling constante) al construir aplicaciones web en tiempo real.
-*   **Ventajas y desventajas:** 
-    *   *Ventajas:* Comunicación instantánea, reduce el tráfico de red (overhead de HTTP).
-    *   *Desventajas:* Mayor complejidad de infraestructura (balanceadores de carga deben soportarlo), requiere manejo de caídas y reconexiones.
-*   **Casos de uso:** Chats, streaming de datos financieros, juegos multijugador, **sistemas de votación interactiva**.
-*   **Casos de aplicación:** Binance (precios en vivo), WhatsApp Web.
+#### Protocolo de Integración: WebSockets (ActionCable)
+*   **Definición clara (qué es y qué no es):** 
+    *   *Qué es:* Es un protocolo de comunicación informático que proporciona canales de comunicación full-duplex bidireccionales sobre una única conexión TCP de larga duración.
+    *   *Qué NO es:* No sigue el ciclo tradicional de petición-respuesta de HTTP, donde la conexión se cierra al enviar los datos.
+*   **Características principales:** Facilita la transmisión de datos con latencias mínimas y elimina el overhead de red al evitar encabezados repetitivos.
+*   **Historia y evolución:** Estandarizado por la IETF en 2011 (RFC 6455) para reemplazar técnicas ineficientes como el "long-polling", permitiendo verdaderas aplicaciones web reactivas.
+*   **Ventajas y desventajas:** Permite arquitecturas altamente reactivas. La desventaja radica en la complejidad de infraestructura necesaria para mantener miles de conexiones TCP simultáneas y el manejo de reconexiones.
+*   **Casos de uso (cuándo usarlo y cuándo no):** Mandatorio para plataformas de trading, aplicaciones de chat y sistemas de participación en tiempo real (votaciones interactivas). Innecesario para la carga de contenido estático o asíncrono no crítico.
+*   **Casos de aplicación:** Mensajería instantánea (WhatsApp Web), plataformas financieras (Binance) y colaboración en tiempo real (Google Docs).
 
-### 1.3. Relación entre el estilo y las tecnologías (y nivel de comunión)
-*   **¿Qué tan común es el stack?** La combinación específica de **Electron+Python para frontend** y **Rails+Redis para backend** no es tradicional en proyectos estándar, lo cual lo convierte en un ecosistema altamente desacoplado. Rails y Redis sí son inseparables en la industria (Rails usa Redis nativamente para ActionCable/WebSockets y Caché). Por otro lado, aislar la UI en Electron con Python interactuando con un backend remoto mediante WebSockets es un modelo de "Sistemas Distribuidos" interesante.
-*   **Relación con Clean Architecture:** Esta separación estricta favorece Clean Architecture. El núcleo de negocio vivirá en Python (aplicación cliente pesada) o en Ruby (servidor), comunicándose a través del puerto definido (WebSockets). Rails, que tiende a estar altamente acoplado, deberá ser refactorizado para separar sus Controladores de los Casos de Uso, limitando a Rails a ser solo un "Framework de Entrega Web" (Delivery Mechanism) y a Redis como un simple "Detalle de Base de Datos".
+### 1.3. Relación entre el estilo y las tecnologías seleccionadas
+*   **Relación entre tecnologías (Análisis de mercado):** Se identifican dos ecosistemas contrastantes. Por un lado, la integración de **Rails, Redis y WebSockets (ActionCable)** representa un estándar industrial sumamente maduro y cohesivo. Por el contrario, el uso de **Electron operado mediante Python** representa un nicho especializado. La integración de ambos polos mediante un protocolo de red (WebSockets) da como resultado un sistema distribuido heterogéneo.
+*   **Relación con Clean Architecture:** Precisamente la naturaleza heterogénea de este stack obliga a implementar las restricciones de Clean Architecture. Al residir la interfaz de usuario (Python) y el servidor (Ruby) en entornos aislados, se garantiza una separación física y lógica. Asimismo, se requiere delimitar la responsabilidad de Rails para que actúe exclusivamente como mecanismo de entrega (Delivery Mechanism), y la de Redis como adaptador de persistencia, resguardando la lógica core en entidades y casos de uso abstractos.
 
 ### 1.4. Frameworks: Comandos, Estructura y Variables de Entorno
 
@@ -180,5 +161,127 @@ A continuación se presentan las matrices de análisis para evaluar cómo Clean 
 
 ---
 
-*(Siguiente: Diseño HLD y C4 Model...)*
+### 3. Diseño Arquitectónico (C4 Model y HLD)
+
+### 3.1. Modelo de Datos (Entidades Core)
+El sistema gestiona 3 entidades de negocio fuertemente tipadas e independientes de la base de datos (aplicando la "Regla de Dependencia" de Clean Architecture).
+
+```mermaid
+erDiagram
+    POLL ||--o{ OPTION : contains
+    OPTION ||--o{ VOTE : receives
+    POLL {
+        string id
+        string title
+        boolean is_active
+    }
+    OPTION {
+        string id
+        string poll_id
+        string name
+        int vote_count
+    }
+    VOTE {
+        string id
+        string option_id
+        string user_id
+        timestamp created_at
+    }
+```
+
+### 3.2. Diagrama de Alto Nivel (HLD)
+```mermaid
+graph LR
+    A[Votantes/Audiencia<br/>Teléfonos móviles] -->|HTTP/REST| B(Servidor Backend<br/>Ruby on Rails)
+    B <-->|Almacena/Lee| C[(Persistencia en Memoria<br/>Redis)]
+    B -->|Transmite Resultados<br/>WebSockets| D[Presentador/Host<br/>App Escritorio: Electron+Python]
+```
+
+### 3.3. Diagrama de Contexto (C4 Nivel 1)
+```mermaid
+C4Context
+    title Diagrama de Contexto del Sistema de Votación Interactiva
+    
+    Person(voter, "Votante", "Estudiante en el salón con un celular.")
+    Person(host, "Presentador", "Profesor o expositor mostrando resultados.")
+    
+    System(votingSystem, "Sistema de Votación", "Gestiona las encuestas, recibe votos y notifica resultados en tiempo real.")
+    
+    Rel(voter, votingSystem, "Visualiza opciones y emite su voto", "Smartphone / Navegador")
+    Rel(host, votingSystem, "Inicia encuestas y visualiza métricas en tiempo real", "Desktop App")
+```
+
+### 3.4. Diagrama de Contenedores (C4 Nivel 2)
+```mermaid
+C4Container
+    title Diagrama de Contenedores
+    
+    Person(voter, "Votante", "Estudiante en el salón.")
+    Person(host, "Presentador", "Quien proyecta los resultados.")
+    
+    Container(desktopApp, "Aplicación de Host", "Electron + Python", "Interfaz gráfica principal sin lógica JS, usa Eel como puente.")
+    Container(webApp, "Interfaz Web Simple", "HTML/CSS (renderizado por Rails)", "Página para lectura de QR y botones para los votantes.")
+    
+    Container(api, "Backend Application", "Ruby on Rails", "Implementa los Casos de Uso limpios. Provee Endpoints web y gestión de WebSockets.")
+    ContainerDb(database, "In-Memory Store", "Redis", "Almacenamiento de votaciones, conteo ultrarrápido y canales pub/sub.")
+    
+    Rel(host, desktopApp, "Controla encuestas")
+    Rel(voter, webApp, "Vota desde su celular")
+    
+    Rel(webApp, api, "Envía el voto", "HTTP/REST")
+    Rel(api, database, "Lee/Escribe estado y emite eventos", "Redis Protocol")
+    Rel(database, api, "Notifica eventos internos", "Pub/Sub")
+    Rel(api, desktopApp, "Empuja resultados en vivo", "WebSockets / ActionCable")
+```
+
+### 3.5. Diagrama Dinámico (Flujo Principal - Votar)
+Representa el flujo funcional de extremo a extremo (end-to-end) al emitir un voto.
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Votante
+    participant UI_Web as WebApp (Celular)
+    participant Rails as Rails (Adaptador Web)
+    participant UseCase as Core: RegistrarVotoUseCase
+    participant Redis as Redis (Database)
+    participant Desktop as Electron (App Host)
+
+    Votante->>UI_Web: Selecciona opción "A"
+    UI_Web->>Rails: POST /votos {option_id: 'A'}
+    Rails->>UseCase: ejecutar(option_id)
+    Note over Rails,UseCase: Clean Architecture: Frontera de paso de DTO (Inyección)
+    UseCase->>Redis: incrementar_voto('A')
+    Redis-->>UseCase: Confirmación (OK)
+    UseCase-->>Rails: Resultado exitoso (Entidad Voto)
+    Rails-->>UI_Web: 200 OK (Voto guardado)
+    Rails->>Redis: Publicar actualización en 'votaciones'
+    Redis-->>Desktop: WebSocket Push (ActionCable)
+    Desktop->>Desktop: Python Eel renderiza gráficos en HTML
+```
+
+### 3.6. Diagrama de Despliegue
+```mermaid
+C4Deployment
+    title Diagrama de Despliegue (Entorno Local para Demostración)
+
+    Deployment_Node(local, "Red Local (LAN) / WiFi del Salón", "Router/WiFi") {
+        
+        Deployment_Node(serverPc, "Computadora del Equipo (Host)", "Windows/Mac/Linux") {
+            Container(desktop, "Aplicación de Escritorio", "Electron + Python", "Proyectada en la pantalla del salón.")
+            
+            Deployment_Node(docker, "Docker Host", "Docker Engine / Podman") {
+                Container(rails, "Contenedor Rails", "Ruby 3.x", "Servidor Backend (Puerto 3000)")
+                ContainerDb(redis, "Contenedor Redis", "Redis 7.x", "Persistencia en RAM (Puerto 6379)")
+            }
+        }
+        
+        Deployment_Node(mobile, "Dispositivos Móviles", "Smartphones del público") {
+            Container(browser, "Navegador Web", "Chrome/Safari", "Accediendo mediante código QR a la IP local.")
+        }
+    }
+    
+    Rel(browser, rails, "Petición de Voto", "HTTP")
+    Rel(rails, redis, "Operaciones I/O", "TCP")
+    Rel(rails, desktop, "Notificaciones Push", "WebSockets")
+```
 
