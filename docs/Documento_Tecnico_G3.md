@@ -14,9 +14,7 @@
 
 ### 1.1. Estilo Arquitectónico: Clean Architecture
 
-*   **Definición clara (qué es y qué no es)**
-    *   *Qué es:* Es un modelo de diseño de software que estructura el sistema en capas concéntricas, garantizando que el dominio y las reglas de negocio permanezcan en el núcleo, aislados de los detalles de infraestructura. Su pilar es la "Regla de Dependencia", la cual dicta que las dependencias del código fuente siempre deben apuntar hacia el centro.
-    *   *Qué NO es:* No es un framework, ni un patrón de diseño a nivel de clases (como Singleton o Factory), ni prescribe una estructura de directorios obligatoria. Es estrictamente un paradigma arquitectónico para la gestión de dependencias.
+*   **Definición clara:** Es un modelo de diseño de software que estructura el sistema en capas concéntricas, garantizando que el dominio y las reglas de negocio permanezcan en el núcleo, aislados de los detalles de infraestructura. Su pilar es la "Regla de Dependencia", la cual dicta que las dependencias del código fuente siempre deben apuntar hacia el centro. A diferencia de un framework, una plantilla de directorios o un patrón a nivel de clases, Clean Architecture es estrictamente un paradigma arquitectónico abstracto enfocado en la gestión de dependencias.
 *   **Clasificación del estilo**
     Se clasifica como un estilo arquitectónico **estructural** y pertenece a la familia de arquitecturas basadas en la *Separación de Intereses (Separation of Concerns)* y *Puertos y Adaptadores*, siendo una evolución de la Arquitectura Hexagonal y la Onion Architecture.
 *   **Características principales**
@@ -31,52 +29,42 @@
 *   **Identificar patrones aplicables y cuándo usarlos**
     *   *Inyección de Dependencias:* Se aplica sistemáticamente para proveer las implementaciones de repositorios y servicios externos a los Casos de Uso.
     *   *Patrón Repositorio:* Se utiliza para abstraer la persistencia subyacente (Redis), exponiendo contratos (interfaces) que el dominio comprende, sin exponer la tecnología específica.
-*   **Casos de uso (cuándo usarlo y cuándo no)**
-    *   *Cuándo usarlo:* En sistemas de nivel empresarial (Enterprise), dominios de negocio complejos, y proyectos con expectativa de vida prolongada donde la tecnología externa sea susceptible a cambios.
-    *   *Cuándo no usarlo:* En prototipos rápidos (MVPs), aplicaciones de vida corta, o sistemas CRUD simples donde el uso de un patrón MVC tradicional ofrece suficiente robustez con menor costo de desarrollo.
+*   **Casos de uso:** Su aplicación es ideal en sistemas de nivel empresarial (Enterprise), dominios de negocio complejos y proyectos con expectativa de vida prolongada donde la tecnología externa sea susceptible a cambios. Por el contrario, resulta excesivo y contraproducente en prototipos rápidos (MVPs), aplicaciones de vida corta o sistemas CRUD simples, donde un patrón MVC tradicional ofrecería suficiente robustez con un menor costo de desarrollo inicial.
 *   **Casos de aplicación (ejemplos reales en la industria)**
     Adoptado frecuentemente en el sector FinTech (ej. N26, Nubank) y en la arquitectura de microservicios de plataformas de alto tráfico (ej. Netflix, Uber), donde el aislamiento de la lógica core permite realizar actualizaciones de infraestructura sin interrumpir las transacciones comerciales.
 
 ### 1.2. Tecnologías del Stack Asignado
 
 #### Frontend: Electron + Python (Eel)
-*   **Definición clara (qué es y qué no es):** 
-    *   *Qué es:* Electron es un framework para construir aplicaciones de escritorio nativas utilizando tecnologías web. Eel es una biblioteca que sirve de puente entre Python y el motor de Chromium, permitiendo gestionar la interfaz web directamente desde el backend en Python.
-    *   *Qué NO es:* No es un entorno para publicar páginas web públicas, ni genera ejecutables en código máquina nativo (como C++); su núcleo ejecuta una instancia embebida de un navegador.
+*   **Definición clara:** Electron es un framework para construir aplicaciones de escritorio nativas utilizando tecnologías web, mientras que Eel es una biblioteca que sirve de puente entre Python y el motor Chromium, permitiendo gestionar la interfaz web directamente desde el backend en Python. No se trata de un entorno para alojar páginas web públicas ni genera ejecutables en código máquina puro, sino que opera levantando una instancia embebida de un navegador web.
 *   **Características principales:** Es multiplataforma (Windows, macOS, Linux) y otorga acceso a recursos locales del sistema operativo. En este contexto, permite prescindir del uso de JavaScript para la lógica de presentación.
 *   **Historia y evolución:** Electron fue desarrollado por GitHub en 2013 como base para el editor Atom. Eel surgió posteriormente para cubrir la necesidad de los desarrolladores de Python de crear interfaces gráficas modernas, superando las limitaciones visuales de librerías tradicionales como Tkinter.
 *   **Ventajas y desventajas:** Su principal ventaja es la reutilización del ecosistema web (HTML/CSS) combinado con la potencia de procesamiento de Python. Su mayor desventaja es el alto consumo de recursos (memoria RAM) debido al motor de Chromium embebido.
-*   **Casos de uso (cuándo usarlo y cuándo no):** Recomendado para herramientas internas corporativas, dashboards analíticos y editores de código. No es adecuado para aplicaciones que requieran un consumo mínimo de memoria o gráficos 3D intensivos.
+*   **Casos de uso:** Está altamente recomendado para el desarrollo de herramientas internas corporativas, dashboards analíticos y editores de código multiplataforma. Sin embargo, su arquitectura basada en Chromium lo hace inadecuado para aplicaciones que requieran un consumo mínimo de memoria RAM o renderizado de gráficos 3D intensivos.
 *   **Casos de aplicación:** Plataformas de comunicación como Slack, Discord y WhatsApp Desktop, y editores como Visual Studio Code.
 
 #### Backend: Ruby on Rails
-*   **Definición clara (qué es y qué no es):** 
-    *   *Qué es:* Es un framework de desarrollo web en el lado del servidor, escrito en Ruby y estructurado bajo el paradigma Modelo-Vista-Controlador (MVC).
-    *   *Qué NO es:* No es un lenguaje de programación independiente ni un Sistema de Gestión de Contenidos (CMS) autoinstalable.
+*   **Definición clara:** Es un framework de desarrollo web en el lado del servidor, escrito en Ruby y estructurado bajo el paradigma Modelo-Vista-Controlador (MVC). A diferencia de lenguajes de programación independientes o Sistemas de Gestión de Contenidos (CMS) autoinstalables como WordPress, Rails proporciona un esqueleto completo de herramientas para construir aplicaciones web a medida desde cero.
 *   **Características principales:** Promueve los principios de "Convención sobre Configuración" (CoC) y "No te repitas" (DRY), agilizando el desarrollo al tomar decisiones arquitectónicas por defecto.
 *   **Historia y evolución:** Creado por David Heinemeier Hansson (DHH) en 2003 durante el desarrollo de Basecamp. Popularizó el desarrollo ágil de aplicaciones web y estandarizó múltiples convenciones modernas.
 *   **Ventajas y desventajas:** Destaca por su extrema velocidad para construir aplicaciones funcionales. Su desventaja en contextos de Clean Architecture es su tendencia al acoplamiento profundo (especialmente mediante ActiveRecord), exigiendo un esfuerzo adicional para separar el dominio del framework.
-*   **Casos de uso (cuándo usarlo y cuándo no):** Ideal para Startups, plataformas SaaS y APIs RESTful de rápido crecimiento. Menos idóneo para procesos de Machine Learning o procesamiento paralelo masivo.
+*   **Casos de uso:** Resulta ideal para el lanzamiento de Startups, plataformas SaaS y APIs RESTful de rápido crecimiento que requieren alta velocidad de iteración. En contraste, pierde eficiencia en dominios que exigen procesos de Machine Learning intensivos o cálculos paralelos masivos, donde otros ecosistemas tienen mayor especialización.
 *   **Casos de aplicación:** Plataformas globales como GitHub, Shopify, Twitch y Airbnb (en sus inicios).
 
 #### Persistencia: Redis
-*   **Definición clara (qué es y qué no es):** 
-    *   *Qué es:* Es un motor de estructura de datos en memoria (In-Memory), de código abierto, empleado como base de datos, caché y bróker de mensajes.
-    *   *Qué NO es:* No es una base de datos relacional, carece de soporte para sentencias SQL complejas y no está diseñado como almacenamiento primario persistente en disco para datos históricos masivos.
+*   **Definición clara:** Es un motor de estructura de datos en memoria (In-Memory), de código abierto, empleado frecuentemente como base de datos de latencia ultra baja, caché y bróker de mensajes. Se diferencia de las bases de datos relacionales tradicionales en que no opera con sentencias SQL complejas ni está diseñado como un almacenamiento primario persistente en disco para archivar volúmenes masivos de datos históricos inactivos.
 *   **Características principales:** Estructura basada en clave-valor, tiempos de respuesta submilimétricos y soporte integral para arquitecturas guiadas por eventos mediante el patrón de Publicación/Suscripción (Pub/Sub).
 *   **Historia y evolución:** Desarrollado en 2009 por Salvatore Sanfilippo ante la necesidad de mejorar el rendimiento en tiempo real de su plataforma de analíticas web, superando las latencias de las bases de datos en disco.
 *   **Ventajas y desventajas:** Proporciona un rendimiento insuperable para operaciones de lectura/escritura. Su limitación principal es el costo operativo, dado que el almacenamiento en RAM es significativamente más caro que el almacenamiento en disco.
-*   **Casos de uso (cuándo usarlo y cuándo no):** Óptimo para tableros de puntuación en vivo (Leaderboards), gestión de sesiones web, votaciones en tiempo real y cachés de alta velocidad. No debe usarse como única fuente de verdad para datos transaccionales críticos de largo plazo (como registros contables).
+*   **Casos de uso:** Es óptimo para implementar tableros de puntuación en vivo (Leaderboards), gestión distribuida de sesiones web, votaciones interactivas en tiempo real y sistemas de caché de alta velocidad. Debido a la volatilidad y costo de la memoria RAM, no debe ser empleado como la única fuente de verdad para transacciones contables o datos relacionales críticos a largo plazo.
 *   **Casos de aplicación:** Arquitecturas de tiempo real en empresas como Twitter, Pinterest y StackOverflow.
 
 #### Protocolo de Integración: WebSockets (ActionCable)
-*   **Definición clara (qué es y qué no es):** 
-    *   *Qué es:* Es un protocolo de comunicación informático que proporciona canales de comunicación full-duplex bidireccionales sobre una única conexión TCP de larga duración.
-    *   *Qué NO es:* No sigue el ciclo tradicional de petición-respuesta de HTTP, donde la conexión se cierra al enviar los datos.
+*   **Definición clara:** Es un protocolo de comunicación informático que proporciona canales full-duplex bidireccionales sobre una única conexión TCP persistente de larga duración. Rompe con el ciclo tradicional de petición-respuesta de HTTP, ya que permite que la conexión permanezca abierta, posibilitando al servidor enviar información al cliente en cualquier momento sin esperar una petición previa.
 *   **Características principales:** Facilita la transmisión de datos con latencias mínimas y elimina el overhead de red al evitar encabezados repetitivos.
 *   **Historia y evolución:** Estandarizado por la IETF en 2011 (RFC 6455) para reemplazar técnicas ineficientes como el "long-polling", permitiendo verdaderas aplicaciones web reactivas.
 *   **Ventajas y desventajas:** Permite arquitecturas altamente reactivas. La desventaja radica en la complejidad de infraestructura necesaria para mantener miles de conexiones TCP simultáneas y el manejo de reconexiones.
-*   **Casos de uso (cuándo usarlo y cuándo no):** Mandatorio para plataformas de trading, aplicaciones de chat y sistemas de participación en tiempo real (votaciones interactivas). Innecesario para la carga de contenido estático o asíncrono no crítico.
+*   **Casos de uso:** Su implementación es obligatoria para plataformas reactivas como sistemas de trading, aplicaciones de chat en vivo y sistemas de participación en tiempo real (como encuestas interactivas). Por la complejidad de infraestructura que conlleva, resulta un sobrecosto innecesario si el objetivo es simplemente servir contenido estático o realizar cargas asíncronas no críticas.
 *   **Casos de aplicación:** Mensajería instantánea (WhatsApp Web), plataformas financieras (Binance) y colaboración en tiempo real (Google Docs).
 
 ### 1.3. Relación entre el estilo y las tecnologías seleccionadas
@@ -84,8 +72,6 @@
 *   **Relación con Clean Architecture:** Precisamente la naturaleza heterogénea de este stack obliga a implementar las restricciones de Clean Architecture. Al residir la interfaz de usuario (Python) y el servidor (Ruby) en entornos aislados, se garantiza una separación física y lógica. Asimismo, se requiere delimitar la responsabilidad de Rails para que actúe exclusivamente como mecanismo de entrega (Delivery Mechanism), y la de Redis como adaptador de persistencia, resguardando la lógica core en entidades y casos de uso abstractos.
 
 ### 1.4. Frameworks: Comandos, Estructura y Variables de Entorno
-
-*(Nota para la exposición: No nos enfocaremos en Python o Ruby como lenguajes, sino en el uso específico de las herramientas).*
 
 **Backend: Ruby on Rails**
 *   **Comandos de creación:** 
