@@ -1,0 +1,181 @@
+================================================================================
+GUIA PASO A PASO PARA LA DEMOSTRACION EN VIVO (PRESENTACION)
+Sistema: DecisionRoom G3 - Votacion en Tiempo Real
+Stack: Electron + Python (Eel), Ruby on Rails, Redis, WebSockets (ActionCable)
+================================================================================
+
+Este archivo contiene unicamente los comandos directos y el guion secuencial
+para probar el sistema de inicio a fin durante la sustentacion ante el docente.
+
+
+--------------------------------------------------------------------------------
+PASO 0: PREPARACION PREVIA (Hacer una sola vez antes de pasar al frente)
+--------------------------------------------------------------------------------
+
+1. Abrir terminal en la carpeta raiz del proyecto:
+   cd C:\Users\santi\Downloads\Taller_3_Arqui\taller1-arqui-G3
+
+2. Instalar dependencias de Python para el cliente de escritorio:
+   cd frontend_desktop
+   python -m venv venv
+   venv\Scripts\activate
+   pip install -r requirements.txt
+   cd ..
+
+
+--------------------------------------------------------------------------------
+PASO 1: LEVANTAR EL BACKEND Y REDIS CON DOCKER (Inicio de la sustentacion)
+--------------------------------------------------------------------------------
+
+En una terminal (Terminal 1) en la raiz del proyecto:
+
+1. Iniciar los contenedores:
+   docker compose up --build -d
+
+2. Verificar que los 2 contenedores esten corriendo (Up):
+   docker compose ps
+
+3. Verificar que el servidor Rails responda al Healthcheck:
+   curl http://localhost:3000/health
+   (Respuesta esperada: {"status":"ok"})
+
+
+--------------------------------------------------------------------------------
+PASO 2: ABRIR LA INSPECCION DE REDIS (Para mostrar la base de datos en vivo)
+--------------------------------------------------------------------------------
+
+En una segunda terminal (Terminal 2):
+
+1. Entrar a la consola de Redis dentro del contenedor:
+   docker exec -it decisionroom_redis redis-cli
+
+2. Mostrar la votacion inicial cargada en memoria:
+   HGETALL poll:1
+
+3. Mostrar que los contadores estan en 0:
+   HGETALL poll:1:options
+
+4. Mostrar que la lista de votantes esta vacia:
+   SMEMBERS poll:1:voters
+
+Dejar esta ventana abierta para volver a ella despues de votar.
+
+
+--------------------------------------------------------------------------------
+PASO 3: ABRIR DOS VENTANAS DEL CLIENTE DE ESCRITORIO (SIMULAR ASAMBLEA)
+--------------------------------------------------------------------------------
+
+En una tercera terminal (Terminal 3):
+1. Abrir la Terminal A (Representa al Delegado 1):
+   cd frontend_desktop
+   venv\Scripts\activate
+   $env:CLIENT_NODE_ID="terminal_mesa_A"
+   python main.py
+
+En una cuarta terminal (Terminal 4):
+2. Abrir la Terminal B (Representa al Delegado 2 o Proyector):
+   cd frontend_desktop
+   venv\Scripts\activate
+   $env:CLIENT_NODE_ID="terminal_mesa_B"
+   python main.py
+
+Explicar al profesor: "Tenemos dos aplicaciones de escritorio independientes en
+Electron y Python conectadas por WebSocket sobre TCP al backend Rails".
+
+
+--------------------------------------------------------------------------------
+PASO 4: DEMOSTRAR EL FLUJO EN TIEMPO REAL (WEBSOCKETS PUSH)
+--------------------------------------------------------------------------------
+
+1. En la ventana de la Terminal A:
+   Hacer clic en el boton: "Emitir Voto: A Favor".
+
+2. Mostrar inmediatamente lo que sucede:
+   - En la Terminal A: El boton se bloquea, cambia a "Voto Registrado" y sale
+     un banner verde de confirmacion.
+   - En la Terminal B (sin haber tocado nada): La barra verde de "A Favor" se
+     mueve sola al 100% y el contador sube en tiempo real gracias al broadcast
+     de WebSockets.
+
+3. Volver a la Terminal 2 (donde esta abierto redis-cli) y ejecutar:
+   HGETALL poll:1:options
+   (Mostrara: opt_A con 1 voto)
+
+   SMEMBERS poll:1:voters
+   (Mostrara: "terminal_mesa_A")
+
+Explicar al profesor: "La persistencia se realizo con operaciones atomicas HINCRBY
+y SADD en Redis con latencia de sub-milisegundo".
+
+
+--------------------------------------------------------------------------------
+PASO 5: DEMOSTRAR ROBUSTEZ Y VALIDACION (RECHAZO DE VOTO DUPLICADO)
+--------------------------------------------------------------------------------
+
+1. En la misma Terminal A (que ya voto):
+   Intentar hacer clic de nuevo o explicar la regla de negocio.
+
+2. Para demostrar la validacion estricta por consola o recarga:
+   Si se abre la consola del navegador en la Terminal A y se intenta reenviar
+   el voto, el servidor rechaza la peticion y muestra la alerta roja:
+   "El terminal terminal_mesa_A ya emitio su voto previamente."
+
+Explicar al profesor: "Clean Architecture aisla la regla de negocio y Redis Set
+valida la unicidad en tiempo O(1) impidiendo votos dobles o fraude".
+
+
+--------------------------------------------------------------------------------
+PASO 6: DEMOSTRAR CONCURRENCIA DESDE LA TERMINAL B
+--------------------------------------------------------------------------------
+
+1. En la ventana de la Terminal B:
+   Hacer clic en el boton: "Emitir Voto: En Contra".
+
+2. Mostrar la sincronizacion:
+   Ambas pantallas se actualizan simultaneamente mostrando:
+   - A Favor: 1 voto (50.0%)
+   - En Contra: 1 voto (50.0%)
+
+
+--------------------------------------------------------------------------------
+PASO 7: REINICIAR LA VOTACION EN VIVO (RESET DEMO)
+--------------------------------------------------------------------------------
+
+1. En cualquiera de las dos ventanas, hacer clic en:
+   "Reiniciar Votacion (Demo)"
+
+2. Confirmar en el cuadro de dialogo.
+
+3. Mostrar como ambas ventanas vuelven inmediatamente a 0 votos (0%) y los
+   botones se habilitan nuevamente para una nueva ronda.
+
+
+--------------------------------------------------------------------------------
+PASO 8: EJECUTAR LA SUITE DE PRUEBAS AUTOMATIZADA (BROCHE DE ORO)
+--------------------------------------------------------------------------------
+
+Para demostrar que todo el sistema cuenta con pruebas automatizadas, ejecutar
+en una terminal en la raiz:
+
+python tests/test_e2e_flow.py
+
+Esto correra automaticamente:
+- Verificacion HTTP de salud (200 OK).
+- Handshake y suscripcion a ActionCable.
+- Emision de voto exitosa.
+- Rechazo de voto duplicado (prueba negativa).
+- Concurrencia multi-terminal.
+- Reinicio a cero.
+
+Todos los casos saldran en verde con PASS.
+
+
+--------------------------------------------------------------------------------
+PASO 9: APAGAR TODO AL FINALIZAR LA PRESENTACION
+--------------------------------------------------------------------------------
+
+1. Cerrar las ventanas graficas de Python.
+
+2. En la terminal raiz, apagar los contenedores:
+   docker compose down
+================================================================================

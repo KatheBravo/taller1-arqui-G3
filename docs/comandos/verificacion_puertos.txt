@@ -1,0 +1,89 @@
+================================================================================
+GUIA DE VERIFICACION DE PUERTOS Y ENTORNO EN LA MAQUINA VIRTUAL
+Sistema: DecisionRoom G3
+Puertos a verificar: 3000 (Backend Rails) y 6379 (Redis)
+================================================================================
+
+Ejecuta estas comprobaciones apenas inicies sesion en la maquina virtual de la
+universidad para asegurar que los puertos esten libres antes de levantar Docker.
+
+
+--------------------------------------------------------------------------------
+1. VERIFICACION EN WINDOWS (PowerShell o CMD)
+--------------------------------------------------------------------------------
+
+Paso 1: Ejecutar el comando de inspeccion:
+
+netstat -ano | findstr ":3000 :6379"
+
+Interpretacion de la salida:
+- Si no sale nada en pantalla:
+  EXCELENTE. Ambos puertos estan libres y listos para usarse.
+
+- Si sale alguna linea con "LISTENING":
+  Significa que otro programa esta ocupando el puerto.
+  Ejemplo:
+  TCP    0.0.0.0:3000           0.0.0.0:0              LISTENING       12345
+  (El ultimo numero, 12345, es el PID o identificador del proceso).
+
+
+Paso 2: Como liberar el puerto ocupado en Windows:
+
+Para matar el proceso que estorba en ese puerto, ejecuta (cambiando 12345 por el PID):
+taskkill /F /PID 12345
+
+
+--------------------------------------------------------------------------------
+2. VERIFICACION EN LINUX (Bash / Terminal)
+--------------------------------------------------------------------------------
+
+Paso 1: Ejecutar el comando de inspeccion:
+
+ss -tulpn | grep -E "3000|6379"
+# O si no existe ss:
+netstat -tulpn | grep -E "3000|6379"
+
+Interpretacion:
+- Si no devuelve nada:
+  EXCELENTE. Los puertos estan libres.
+
+- Si devuelve un proceso:
+  Te dira el nombre del programa y el PID (ej. pid=4567).
+
+
+Paso 2: Como liberar el puerto ocupado en Linux:
+
+sudo kill -9 4567
+
+
+--------------------------------------------------------------------------------
+3. PLAN B DE EMERGENCIA (SI NO TIENES PERMISOS DE ADMINISTRADOR PARA MATARLO)
+--------------------------------------------------------------------------------
+
+Si la maquina virtual es compartida y no tienes permisos de administrador para
+matar el proceso ocupado, simplemente cambia el puerto externo en el archivo
+docker-compose.yml:
+
+Ejemplo:
+Cambiar en docker-compose.yml:
+  ports:
+    - "3000:3000"
+Por:
+  ports:
+    - "3001:3000"
+
+Y en frontend_desktop/.env o main.py cambiar:
+  WS_BACKEND_URL=ws://127.0.0.1:3001/cable
+
+
+--------------------------------------------------------------------------------
+4. VERIFICAR QUE DOCKER FUNCIONE EN LA MAQUINA VIRTUAL
+--------------------------------------------------------------------------------
+
+Ejecuta este comando rapido para confirmar que el motor de contenedores responda:
+
+docker run --rm hello-world
+
+Si imprime "Hello from Docker!", todo el entorno esta 100% operativo para
+proceder con el PASO 1 de la guia de presentacion.
+================================================================================

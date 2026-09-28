@@ -104,32 +104,32 @@ Documento de control y seguimiento de requisitos para el Grupo 3 (G3). Permite m
 ### Fase 4: Implementación Práctica del Caso de Uso
 
 #### 4.1. Configuración de Entornos y Contenedores (Obligatorio Docker / Podman)
-- [ ] Archivo `Dockerfile` para el backend Ruby on Rails (Ruby 3.2-alpine).
-- [ ] Archivo `docker-compose.yml` para orquestar Backend y Redis.
-- [ ] Contenedor Redis oficial levantando en puerto 6379 con volumen de persistencia.
-- [ ] Configuración del pool de conexión a Redis en Rails sin ActiveRecord (`--skip-active-record`).
+- [x] Archivo `Dockerfile` para el backend Ruby on Rails (Ruby 3.2-alpine).
+- [x] Archivo `docker-compose.yml` para orquestar Backend y Redis.
+- [x] Contenedor Redis oficial levantando en puerto 6379 con volumen de persistencia.
+- [x] Configuración del pool de conexión a Redis en Rails sin ActiveRecord (`--skip-active-record`).
 
 #### 4.2. Backend: Clean Architecture en Ruby on Rails
-- [ ] Crear estructura de carpetas: `app/core/entities`, `app/core/use_cases`, `app/infrastructure/repositories`.
-- [ ] Implementar Entidades puras de Ruby (POROs): `Poll`, `Option`, `Vote`.
-- [ ] Implementar Caso de Uso principal: `RegisterVote` con validación de encuesta abierta y control de votante único.
-- [ ] Implementar Adaptador de Repositorio sobre Redis (`RedisVoteRepository`) con operaciones atómicas (`HINCRBY`, `SADD`).
-- [ ] Implementar Canal de WebSocket (`VotingChannel`) para recibir la acción `cast_vote` y emitir el broadcast a clientes.
-- [ ] Manejo de errores y respuestas estructuradas (voto duplicado, opción inválida, sesión cerrada).
+- [x] Crear estructura de carpetas: `app/core/entities`, `app/core/use_cases`, `app/infrastructure/repositories`.
+- [x] Implementar Entidades puras de Ruby (POROs): `Poll`, `Option`, `Vote`.
+- [x] Implementar Caso de Uso principal: `RegisterVote` con validación de encuesta abierta y control de votante único.
+- [x] Implementar Adaptador de Repositorio sobre Redis (`RedisVoteRepository`) con operaciones atómicas (`HINCRBY`, `SADD`).
+- [x] Implementar Canal de WebSocket (`VotingChannel`) para recibir la acción `cast_vote` y emitir el broadcast a clientes.
+- [x] Manejo de errores y respuestas estructuradas (voto duplicado, opción inválida, sesión cerrada).
 
 #### 4.3. Frontend: Aplicación de Escritorio con Electron + Python (Eel)
-- [ ] Estructura del proyecto: `main.py`, carpeta `web/` con `index.html`, `styles.css` y `app.js`.
-- [ ] Interfaz gráfica con listado de opciones de voto y barras de resultados en tiempo real.
-- [ ] Integración en `main.py` de cliente WebSocket con la librería `websockets` para suscribirse a ActionCable.
-- [ ] Recepción de eventos push del servidor y actualización reactiva de la interfaz mediante `@eel.expose`.
-- [ ] Envío de voto desde la UI hacia Python y retransmisión por WebSocket al backend.
-- [ ] Empaquetado ejecutable de la aplicación con PyInstaller / Eel.
+- [x] Estructura del proyecto: `main.py`, carpeta `web/` con `index.html`, `styles.css` y `app.js`.
+- [x] Interfaz gráfica con listado de opciones de voto y barras de resultados en tiempo real.
+- [x] Integración en `main.py` de cliente WebSocket con la librería `websockets` para suscribirse a ActionCable.
+- [x] Recepción de eventos push del servidor y actualización reactiva de la interfaz mediante `@eel.expose`.
+- [x] Envío de voto desde la UI hacia Python y retransmisión por WebSocket al backend.
+- [x] Empaquetado ejecutable de la aplicación con PyInstaller / Eel.
 
 #### 4.4. Pruebas y Validación del Flujo End-to-End
-- [ ] Probar emisión de voto exitoso desde una instancia de la aplicación de escritorio.
-- [ ] Abrir dos o más instancias de la app de escritorio y verificar sincronización simultánea de resultados en vivo.
-- [ ] Probar validación de error al intentar votar dos veces con el mismo identificador.
-- [ ] Verificar persistencia real de datos consultando Redis directamente con `redis-cli`.
+- [x] Probar emisión de voto exitoso desde una instancia de la aplicación de escritorio.
+- [x] Abrir dos o más instancias de la app de escritorio y verificar sincronización simultánea de resultados en vivo.
+- [x] Probar validación de error al intentar votar dos veces con el mismo identificador.
+- [x] Verificar persistencia real de datos consultando Redis directamente con `redis-cli`.
 
 ---
 

@@ -1,0 +1,27 @@
+# Docker
+.env
+.env.local
+
+# Rails & Ruby
+backend/tmp/
+backend/log/
+backend/*.pid
+*.gem
+*.rbc
+.bundle/
+vendor/bundle
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+frontend_desktop/venv/
+dist/
+build/
+*.spec
+
+# OS
+.DS_Store
+Thumbs.db

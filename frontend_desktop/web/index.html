@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DecisionRoom G3 - Terminal de Votacion en Tiempo Real</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Script inyectado dinamicamente por Eel -->
+  <script type="text/javascript" src="/eel.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Encabezado de la Terminal -->
+    <header class="app-header">
+      <div>
+        <h1>DecisionRoom G3</h1>
+        <div class="subtitle">Terminal de Asambleas y Consenso en Tiempo Real</div>
+      </div>
+      <div class="header-badges">
+        <div id="status-badge" class="status-badge">
+          <span class="status-dot"></span>
+          <span id="status-text">Conectando...</span>
+        </div>
+        <div class="terminal-badge" id="terminal-badge">Terminal ID: Local</div>
+      </div>
+    </header>
+
+    <!-- Banner de Notificaciones / Errores -->
+    <div id="alert-banner" class="alert-banner"></div>
+
+    <!-- Tarjeta de Detalle de la Votacion -->
+    <section class="poll-card">
+      <div class="poll-header">
+        <h2 id="poll-title" class="poll-title">Cargando votacion...</h2>
+        <span id="poll-status" class="poll-state-tag">Abierta</span>
+      </div>
+      <p id="poll-description" class="poll-description">
+        Estableciendo conexion segura con el servidor Ruby on Rails a traves de WebSockets...
+      </p>
+    </section>
+
+    <!-- Seccion de Opciones de Votacion -->
+    <section class="options-section">
+      <div class="option-row">
+        <span class="section-title">Opciones Disponibles</span>
+        <span id="total-votes" class="section-title">0 votos emitidos</span>
+      </div>
+
+      <!-- Opcion A: A Favor -->
+      <div class="option-item">
+        <div class="option-row">
+          <span class="option-name">A Favor</span>
+          <span id="count-opt_A" class="option-metrics">0 votos (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div id="bar-opt_A" class="progress-fill opt_A"></div>
+        </div>
+        <div>
+          <button class="vote-btn" onclick="onVoteClick('opt_A')">Emitir Voto: A Favor</button>
+        </div>
+      </div>
+
+      <!-- Opcion B: En Contra -->
+      <div class="option-item">
+        <div class="option-row">
+          <span class="option-name">En Contra</span>
+          <span id="count-opt_B" class="option-metrics">0 votos (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div id="bar-opt_B" class="progress-fill opt_B"></div>
+        </div>
+        <div>
+          <button class="vote-btn" onclick="onVoteClick('opt_B')">Emitir Voto: En Contra</button>
+        </div>
+      </div>
+
+      <!-- Opcion C: Abstencion -->
+      <div class="option-item">
+        <div class="option-row">
+          <span class="option-name">Abstencion</span>
+          <span id="count-opt_C" class="option-metrics">0 votos (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div id="bar-opt_C" class="progress-fill opt_C"></div>
+        </div>
+        <div>
+          <button class="vote-btn" onclick="onVoteClick('opt_C')">Emitir Voto: Abstencion</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pie de Pagina y Controles de Demostracion -->
+    <footer class="app-footer">
+      <div class="footer-info">
+        Clean Architecture + Rails API + Redis + ActionCable WebSockets
+      </div>
+      <div>
+        <button class="reset-btn" onclick="onResetClick()">Reiniciar Votacion (Demo)</button>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
