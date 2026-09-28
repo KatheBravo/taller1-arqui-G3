@@ -54,5 +54,5 @@ Nota de prueba: Es posible abrir dos o más instancias de la aplicación de escr
 ---
 
 ## Documentación Técnica
-El documento técnico completo con la investigación del estilo, matrices de atributos de calidad, principios SOLID, análisis de mercado laboral y guías paso a paso para el diseño de diagramas arquitectónicos se encuentra en:
-[docs/Documento_Tecnico_G3.md](docs/Documento_Tecnico_G3.md)
+* Documento de Arquitectura y Diseño: [docs/documentacion_tecnica/Documento_Tecnico_G3.md](docs/documentacion_tecnica/Documento_Tecnico_G3.md)
+* Referencias a la Documentación Oficial: [docs/documentacion_tecnica/Referencias_Documentacion_Oficial.md](docs/documentacion_tecnica/Referencias_Documentacion_Oficial.md)
