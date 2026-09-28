@@ -290,18 +290,8 @@ Demostrar el cumplimiento del requerimiento mínimo de 3 entidades de negocio fu
 *   **De POLL a OPTION:** Relación de uno a muchos (1..*). Una votación contiene obligatoriamente una o más opciones. Línea con símbolo de pata de gallo hacia OPTION.
 *   **De OPTION a VOTE:** Relación de uno a muchos (1..*). Una opción puede recibir de 0 a múltiples votos. Línea con símbolo de pata de gallo hacia VOTE.
 
-#### Esquema Visual Textual para Dibujar
-```text
-+-----------------------+           +-----------------------+           +-----------------------+
-|         POLL          | 1       * |        OPTION         | 1       * |         VOTE          |
-+-----------------------+-----------+-----------------------+-----------+-----------------------+
-| PK id                 |  contiene | PK id                 |   recibe  | PK id                 |
-|    title              |           | FK poll_id            |           | FK poll_id            |
-|    description        |           |    text               |           | FK option_id          |
-|    status             |           |    current_votes      |           |    voter_fingerprint  |
-|    created_at         |           +-----------------------+           |    cast_at            |
-+-----------------------+                                               +-----------------------+
-```
+#### Esquema Visual Generado
+![Modelo de Datos ER](./assets/er_diagram.jpg)
 
 #### Mapeo a Estructuras Atómicas de Redis
 *   `poll:{id}` -> Tipo **Hash** (metadatos de la votación).
@@ -331,21 +321,8 @@ Ofrecer una vista panorámica simple de los tres grandes bloques que conforman l
     *   Flecha bidireccional entre el **Adaptador de Repositorio** (Rails) y **Redis**, con la etiqueta `Comandos de Datos (TCP / Puerto 6379)`.
     *   Flecha punteada bidireccional entre **Rails** y **Redis**, con la etiqueta `Pub/Sub de Eventos en Tiempo Real`.
 
-#### Esquema Visual Textual para Dibujar
-```text
-+------------------------------+             +-------------------------------+             +-----------------+
-|      FRONTEND DESKTOP        |             |         BACKEND RAILS         |             |      REDIS      |
-|  (Terminal de Participante)  |             |      (Servidor Central)       |             |   (En Memoria)  |
-|                              |             |                               |             |                 |
-|  [ Vista HTML5 / CSS / JS ]  |             |  [ ActionCable WebSocket ]    |             |  +-----------+  |
-|              ^               |  WebSocket  |               |               |  Comandos   |  |  Hashes   |  |
-|      (IPC)   |               |<===========>|               v               |<===========>|  |  y Sets   |  |
-|              v               |  Bidirecc.  |  [ Clean Core: Use Cases ]    |  TCP:6379   |  +-----------+  |
-|  [ Proceso Local Python ]    |  Port:3000  |               |               |             |  +-----------+  |
-|    (Librería websockets)     |             |               v               |   Pub/Sub   |  |  Pub/Sub  |  |
-|                              |             |  [ Repositorio de Datos ]     |< - - - - - >|  |  Canales  |  |
-+------------------------------+             +-------------------------------+             +-----------------+
-```
+#### Esquema Visual Generado
+![Diagrama de Alto Nivel](./assets/hld_diagram.jpg)
 
 ---
 
@@ -410,31 +387,8 @@ Abrir la frontera del sistema DecisionRoom G3 y exponer sus contenedores de soft
     *   Línea de **Backend Core Application** a **Base de Datos en Memoria**: Etiqueta `Lee / Escribe conteos atómicos [Protocolo Redis sobre TCP:6379]`.
     *   Línea de retorno punteada de **Base de Datos** a **Backend**: Etiqueta `Distribución de eventos entre hilos [Redis Pub/Sub]`.
 
-#### Esquema Visual Textual para Dibujar
-```text
-+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
-: Límite del Sistema DecisionRoom G3                                                            :
-:                                                                                               :
-:  +---------------------------------+                 +-------------------------------------+  :
-:  |     TERMINAL DE ESCRITORIO      |                 |       BACKEND CORE APPLICATION      |  :
-:  |    [Electron + Python (Eel)]    |                 |        [Ruby on Rails API]          |  :
-:  |                                 |                 |                                     |  :
-:  | Interfaz gráfica en Chromium y  |    WebSocket    | Implementa Clean Architecture:      |  :
-:  | cliente de socket en Python     |<===============>| Entidades, Casos de Uso y canales   |  :
-:  +---------------------------------+    (TCP:3000)   +-------------------------------------+  :
-:                                                                 |                             :
-:                                                                 | Protocolo Redis             :
-:                                                                 | (TCP:6379)                  :
-:                                                                 v                             :
-:                                                      +-------------------------------------+  :
-:                                                      |       BASE DE DATOS EN MEMORIA      |  :
-:                                                      |             [Redis 7.x]             |  :
-:                                                      |                                     |  :
-:                                                      | Conteos O(1), Sets de votantes      |  :
-:                                                      | y mensajería interna Pub/Sub        |  :
-:                                                      +-------------------------------------+  :
-+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
-```
+#### Esquema Visual Generado
+![Diagrama de Contenedores](./assets/container_diagram.jpg)
 
 ---
 
@@ -466,26 +420,8 @@ Explicar el paso a paso cronológico y técnico cuando un usuario emite un voto,
 9.  **Paso 9 (Emisión Reactiva):** `Rails WebSocket` publica los nuevos resultados a través de ActionCable broadcast.
 10. **Paso 10 (Push WebSocket):** El servidor Rails empuja simultáneamente el payload `{event: 'results_updated', totals: {...}}` a `Python Local` del votante y a los `Otros Clientes` conectados. Cada terminal actualiza sus barras y gráficos de inmediato.
 
-#### Esquema Visual Textual para Dibujar
-```text
-Delegado      UI (Web)     Python      Rails (Cable)    Caso de Uso     Repositorio        Redis       Otros Clientes
-   |             |            |              |               |               |               |               |
-   |-- 1. Clic ->|            |              |               |               |               |               |
-   |   "A Favor" |-- 2. IPC ->|              |               |               |               |               |
-   |             |            |-- 3. WS JSON>|               |               |               |               |
-   |             |            |              |-- 4. execute->|               |               |               |
-   |             |            |              |               |-- 5. record ->|               |               |
-   |             |            |              |               |               |-- 6. SADD --->|               |
-   |             |            |              |               |               |   (Verificar) |               |
-   |             |            |              |               |               |-- 7. HINCRBY->|               |
-   |             |            |              |               |               |   (Incremento)|               |
-   |             |            |              |               |<-- 8. Éxito --|               |               |
-   |             |            |              |<-- Resultado -|               |               |               |
-   |             |            |<-- 10. Push -|-- 9. Broadcast ActionCable ------------------>|               |
-   |             |            |   WebSocket  |                                               |-- 10. Push -->|
-   |             |<-- Actualiz|              |                                               |   WebSocket   |
-   |<-- Gráfica -|            |              |                                               |               |
-```
+#### Esquema Visual Generado
+![Diagrama de Secuencia](./assets/sequence_diagram.jpg)
 
 ---
 
@@ -506,32 +442,8 @@ Demostrar el cumplimiento de la directriz obligatoria de uso de contenedores (Do
 4.  **Trazar la conexión de red externa:**
     *   Flecha desde el `Proceso Local de Escritorio` (Host OS) hacia el `Contenedor Rails Backend` a través de la interfaz de red local `ws://127.0.0.1:3000/cable`.
 
-#### Esquema Visual Textual para Dibujar
-```text
-+-----------------------------------------------------------------------------------------------+
-|                      ESTACIÓN DE TRABAJO (COMPUTADORA HOST / SISTEMA OPERATIVO)               |
-|                                                                                               |
-|  +------------------------------------+                                                       |
-|  |     PROCESO LOCAL DE ESCRITORIO    |                                                       |
-|  |       [Electron + Python (Eel)]    |                                                       |
-|  +------------------------------------+                                                       |
-|                    |                                                                          |
-|                    | WebSocket (TCP:3000)                                                     |
-|                    v                                                                          |
-|  +-----------------------------------------------------------------------------------------+  |
-|  |                                  MOTOR DOCKER / PODMAN                                  |  |
-|  |                                                                                         |  |
-|  |  +---------------------------------------+       +-----------------------------------+  |  |
-|  |  |       CONTENEDOR RAILS BACKEND        |       |      CONTENEDOR REDIS STORE       |  |  |
-|  |  |           [Ruby 3.2-alpine]           |       |         [redis:7-alpine]          |  |  |
-|  |  |                                       |       |                                   |  |  |
-|  |  | Servidor Puma expuesto en puerto 3000 |=====> | Motor de datos en puerto 6379     |  |  |
-|  |  | (API REST y ActionCable WebSocket)    |       | Volumen montado: redis_data       |  |  |
-|  |  +---------------------------------------+       +-----------------------------------+  |  |
-|  |                      Red Interna Docker (bridge): decisionroom_network                  |  |
-|  +-----------------------------------------------------------------------------------------+  |
-+-----------------------------------------------------------------------------------------------+
-```
+#### Esquema Visual Generado
+![Diagrama de Despliegue](./assets/deploy_diagram.jpg)
 
 ---
 
