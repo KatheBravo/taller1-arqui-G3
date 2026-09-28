@@ -136,9 +136,9 @@ Documento de control y seguimiento de requisitos para el Grupo 3 (G3). Permite m
 ### Fase 5: Entregables Finales y Repositorio Git
 
 #### 5.1. Repositorio Git Público
-- [ ] Repositorio creado en GitHub con visibilidad pública.
-- [ ] Código fuente completo y organizado (Backend, Frontend Desktop, Dockerfiles).
-- [ ] Archivo `.gitignore` adecuado para evitar subir dependencias locales (`vendor/`, `venv/`, `__pycache__`, `.env`).
+- [x] Repositorio creado en GitHub con visibilidad pública.
+- [x] Código fuente completo y organizado (Backend, Frontend Desktop, Dockerfiles).
+- [x] Archivo `.gitignore` adecuado para evitar subir dependencias locales (`vendor/`, `venv/`, `__pycache__`, `.env`).
 - [ ] Creación de TAG de Git (ej. `v1.0.0` o `entrega-taller1`).
 - [ ] Creación del Release formal en GitHub asociado al TAG.
 
@@ -157,6 +157,6 @@ Documento de control y seguimiento de requisitos para el Grupo 3 (G3). Permite m
 
 #### 5.4. Presentación Oral e Infografías
 - [ ] Diapositivas preparadas con estructura fluida y paleta de colores sobria.
-- [ ] Diagramas arquitectónicos dibujados (Modelo de datos, HLD, C4 Nivel 1 Contexto, C4 Nivel 2 Contenedores, Diagrama Dinámico de Secuencia, C4 Deployment).
+- [x] Diagramas arquitectónicos dibujados (Modelo de datos, HLD, C4 Nivel 1 Contexto, C4 Nivel 2 Contenedores, Diagrama Dinámico de Secuencia, C4 Deployment).
 - [ ] Demostración en vivo preparada (Docker levantado y dos ventanas de la app de escritorio listas para votar y mostrar actualización en tiempo real).
 - [ ] Explicación clara de las decisiones técnicas y justificación del estilo Clean Architecture frente a las limitaciones de KISS/YAGNI.

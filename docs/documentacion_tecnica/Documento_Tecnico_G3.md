@@ -267,7 +267,7 @@ Para sustentar fluidamente frente al docente, se debe seguir esta secuencia narr
 #### Objetivo del Diagrama
 Demostrar el cumplimiento del requerimiento mínimo de 3 entidades de negocio fuertemente tipadas e interrelacionadas, modeladas de forma pura e independiente del motor de base de datos.
 
-#### Componentes a Dibujar (Tablas / Cajas de Entidad)
+#### Entidades de Negocio
 1.  **Caja 1: POLL (Votación / Moción)**
     *   `id` (PK, String / UUID): Identificador único de la votación.
     *   `title` (String): Asunto o propuesta a deliberar.
@@ -305,22 +305,6 @@ Demostrar el cumplimiento del requerimiento mínimo de 3 entidades de negocio fu
 #### Objetivo del Diagrama
 Ofrecer una vista panorámica simple de los tres grandes bloques que conforman la arquitectura y los protocolos que los comunican.
 
-#### Paso a Paso Lógico para Dibujarlo a Mano
-1.  **Dibujar a la izquierda** una caja grande titulada **Capa de Presentación (Frontend Desktop)**. Dentro, dibuja dos subcajas conectadas:
-    *   Subcaja superior: "Interfaz de Usuario (Chromium / HTML5-CSS-JS)".
-    *   Subcaja inferior: "Proceso Local Python (Eel Bridge + WebSocket Client)".
-    *   Conecta ambas subcajas con una flecha bidireccional etiquetada como `Llamadas IPC Locales (Eel)`.
-2.  **Dibujar en el centro** una caja titulada **Capa de Negocio y Entrega (Ruby on Rails Backend)**. Dentro, dibuja:
-    *   "Adaptador WebSocket (ActionCable VotingChannel)".
-    *   "Clean Architecture Core (Casos de Uso y Entidades)".
-    *   "Adaptador de Repositorio".
-    *   Conecta el Adaptador WebSocket con el Core, y el Core con el Repositorio mediante flechas verticales de llamada.
-3.  **Dibujar a la derecha** un cilindro titulado **Capa de Persistencia y Eventos (Redis Server)**.
-4.  **Trazar las conexiones principales:**
-    *   Flecha bidireccional entre el **Proceso Local Python** (Frontend) y el **Adaptador WebSocket** (Rails Backend), con la etiqueta `WebSockets (TCP Persistente / Puerto 3000)`.
-    *   Flecha bidireccional entre el **Adaptador de Repositorio** (Rails) y **Redis**, con la etiqueta `Comandos de Datos (TCP / Puerto 6379)`.
-    *   Flecha punteada bidireccional entre **Rails** y **Redis**, con la etiqueta `Pub/Sub de Eventos en Tiempo Real`.
-
 #### Esquema Visual Generado
 ![Diagrama de Alto Nivel](./assets/hld_diagram.jpg)
 
@@ -331,35 +315,8 @@ Ofrecer una vista panorámica simple de los tres grandes bloques que conforman l
 #### Objetivo del Diagrama
 Representar el sistema como una caja negra central y mostrar cómo interactúan con él los diferentes tipos de usuarios humanos en el entorno de la asamblea.
 
-#### Paso a Paso Lógico para Dibujarlo a Mano
-1.  **Dibujar la caja central:** Traza un rectángulo grande con borde grueso en el centro con el título:
-    *   `[Sistema de Software] DecisionRoom G3`.
-    *   Descripción: "Plataforma de votación y toma de decisiones que coordina mociones, valida reglas de negocio, persiste conteos atómicos y sincroniza resultados en vivo".
-2.  **Dibujar a los actores (figuras humanas o cajas de persona):**
-    *   A la izquierda: `[Persona] Delegado / Asambleísta`. Descripción: "Miembro del comité que emite votos desde su terminal y observa el comportamiento del escrutinio".
-    *   A la derecha o arriba: `[Persona] Moderador / Presidente`. Descripción: "Abre la sesión de debate, define la moción y proyecta las métricas de consenso".
-3.  **Trazar las interacciones:**
-    *   Flecha del **Delegado** hacia **DecisionRoom G3**: Etiquetada como `Visualiza opciones y emite voto [Desktop App]`.
-    *   Flecha del **Sistema** hacia el **Delegado**: Etiquetada como `Notifica actualización de resultados en vivo [WebSockets]`.
-    *   Flecha del **Moderador** hacia **DecisionRoom G3**: Etiquetada como `Abre y clausura rondas de votación [Desktop App]`.
-
-#### Esquema Visual Textual para Dibujar
-```text
-           +-----------------------------+
-           |    Moderador / Presidente   |
-           |     (Rol Administrativo)    |
-           +-----------------------------+
-                          |
-                          | Abre / Cierra sesiones
-                          v
-+------------------+             +-----------------------------------------+
-|     Delegado     |  Emite Voto |          [SISTEMA CENTRAL C4]           |
-|  (Participante)  |------------>|             DecisionRoom G3             |
-|                  |<------------|                                         |
-+------------------+  Resultados | Gestiona sesiones, persiste en memoria  |
-                        en vivo   | y sincroniza el escrutinio en vivo      |
-                                 +-----------------------------------------+
-```
+#### Esquema Visual Generado
+![Diagrama de Contexto](./assets/context_diagram.jpg)
 
 ---
 
@@ -367,25 +324,6 @@ Representar el sistema como una caja negra central y mostrar cómo interactúan 
 
 #### Objetivo del Diagrama
 Abrir la frontera del sistema DecisionRoom G3 y exponer sus contenedores de software ejecutables por separado, indicando las tecnologías asignadas y sus canales de enlace.
-
-#### Paso a Paso Lógico para Dibujarlo a Mano
-1.  **Dibujar el límite del sistema:** Traza un gran recuadro punteado que englobe todo, titulado `Límite de DecisionRoom G3`.
-2.  **Dibujar el Contenedor 1 (Frontend):**
-    *   Caja titulada `Terminal de Escritorio`.
-    *   Tecnología: `Electron + Python (Eel)`.
-    *   Descripción: "Provee la interfaz gráfica moderna en Chromium y orquesta la conexión TCP de WebSockets desde Python".
-3.  **Dibujar el Contenedor 2 (Backend):**
-    *   Caja titulada `Backend Core Application`.
-    *   Tecnología: `Ruby on Rails (Modo API, Ruby 3.x)`.
-    *   Descripción: "Aloja las entidades de Clean Architecture, ejecuta los casos de uso de negocio y gestiona el canal ActionCable".
-4.  **Dibujar el Contenedor 3 (Persistencia):**
-    *   Forma de cilindro titulada `Base de Datos en Memoria`.
-    *   Tecnología: `Redis 7.x`.
-    *   Descripción: "Almacena datos clave-valor de votaciones, registros de unicidad y sirve como bróker Pub/Sub".
-5.  **Trazar las conexiones entre contenedores:**
-    *   Línea de **Terminal de Escritorio** a **Backend Core Application**: Etiqueta `Envía votos y escucha eventos [WebSockets / JSON sobre TCP:3000]`.
-    *   Línea de **Backend Core Application** a **Base de Datos en Memoria**: Etiqueta `Lee / Escribe conteos atómicos [Protocolo Redis sobre TCP:6379]`.
-    *   Línea de retorno punteada de **Base de Datos** a **Backend**: Etiqueta `Distribución de eventos entre hilos [Redis Pub/Sub]`.
 
 #### Esquema Visual Generado
 ![Diagrama de Contenedores](./assets/container_diagram.jpg)
@@ -397,7 +335,7 @@ Abrir la frontera del sistema DecisionRoom G3 y exponer sus contenedores de soft
 #### Objetivo del Diagrama
 Explicar el paso a paso cronológico y técnico cuando un usuario emite un voto, demostrando cómo se respetan las fronteras de Clean Architecture, cómo se persiste en Redis y cómo se actualizan todas las pantallas en vivo.
 
-#### Columnas / Líneas de Vida a Dibujar (de izquierda a derecha)
+#### Componentes Involucrados
 1.  `Delegado` (Actor humano)
 2.  `UI (Vista Web)` (HTML/CSS dentro de Chromium)
 3.  `Python Local` (main.py de Eel)
@@ -407,7 +345,7 @@ Explicar el paso a paso cronológico y técnico cuando un usuario emite un voto,
 7.  `Redis Server` (Motor de Base de Datos)
 8.  `Otros Clientes` (Terminales de otros delegados conectados)
 
-#### Paso a Paso Lógico Cronológico (10 Pasos)
+#### Flujo Cronológico de Ejecución (10 Pasos)
 1.  **Paso 1:** El `Delegado` hace clic en la opción "A Favor" en su pantalla.
 2.  **Paso 2:** La `UI` envía una llamada IPC local a `Python Local` ejecutando `submit_vote(poll_id, option_id)`.
 3.  **Paso 3:** `Python Local` serializa el voto en un mensaje JSON y lo transmite por el WebSocket persistente hacia `Rails WebSocket`.
@@ -429,18 +367,6 @@ Explicar el paso a paso cronológico y técnico cuando un usuario emite un voto,
 
 #### Objetivo del Diagrama
 Demostrar el cumplimiento de la directriz obligatoria de uso de contenedores (Docker o Podman), mostrando cómo se aíslan los servicios de backend y base de datos, y cómo se ejecutan frente a la aplicación de escritorio.
-
-#### Paso a Paso Lógico para Dibujarlo a Mano
-1.  **Dibujar el Nodo de Hardware Principal:** Un rectángulo exterior grande titulado `Estación de Trabajo / Computadora Host (Windows 11 / Linux / macOS)`.
-2.  **Dibujar el espacio del Sistema Operativo Host:** Dentro de la computadora, dibuja:
-    *   Una caja para el `Proceso Local de Escritorio`: Contiene `Electron + Python (Eel)`.
-    *   Una caja grande para el `Motor de Contenedores (Docker Engine / Podman)`.
-3.  **Dibujar los Contenedores dentro de Docker:**
-    *   *Contenedor 1 (Backend):* Rectángulo titulado `Contenedor Rails Backend`. Imagen base `Ruby 3.2-alpine`. Ejecuta el servidor Puma en el puerto interno `3000`. Mapeo de puertos hacia el host: `3000:3000`.
-    *   *Contenedor 2 (Persistencia):* Rectángulo titulado `Contenedor Redis Store`. Imagen base `redis:7-alpine`. Ejecuta en el puerto interno `6379`. Mapeo de puertos hacia el host: `6379:6379`. Cuenta con un volumen persistente `redis_data` montado en `/data`.
-    *   *Red Virtual Docker:* Dibuja una línea envolvente titulada `Red Docker Interna (bridge)`, que conecta directamente a Rails con Redis mediante el nombre de host `redis`.
-4.  **Trazar la conexión de red externa:**
-    *   Flecha desde el `Proceso Local de Escritorio` (Host OS) hacia el `Contenedor Rails Backend` a través de la interfaz de red local `ws://127.0.0.1:3000/cable`.
 
 #### Esquema Visual Generado
 ![Diagrama de Despliegue](./assets/deploy_diagram.jpg)
