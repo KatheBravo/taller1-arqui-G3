@@ -138,9 +138,8 @@ Documento de control y seguimiento de requisitos para el Grupo 3 (G3). Permite m
 #### 5.1. Repositorio Git Público
 - [x] Repositorio creado en GitHub con visibilidad pública.
 - [x] Código fuente completo y organizado (Backend, Frontend Desktop, Dockerfiles).
-- [x] Archivo `.gitignore` adecuado para evitar subir dependencias locales (`vendor/`, `venv/`, `__pycache__`, `.env`).
-- [ ] Creación de TAG de Git (ej. `v1.0.0` o `entrega-taller1`).
-- [ ] Creación del Release formal en GitHub asociado al TAG.
+- [x] Creación de TAG de Git (ej. `v1.0.0` o `entrega-taller1`).
+- [x] Creación del Release formal en GitHub asociado al TAG.
 
 #### 5.2. Documento Técnico
 - [x] Sección 1: Investigación completa del estilo y cada tecnología del stack.
