@@ -3,6 +3,7 @@ import json
 import os
 import sys
 import threading
+import urllib.request
 import uuid
 import eel
 import websockets
@@ -55,7 +56,19 @@ async def websocket_listener():
                 await ws.send(json.dumps(subscribe_msg))
                 print(f"[WebSocket] Suscripcion enviada al canal: {CHANNEL_IDENTIFIER}")
 
-                eel.set_connection_status(True, f"Conectado ({CLIENT_NODE_ID})")()
+                eel.set_connection_status(True, f"Conectado ({CLIENT_NODE_ID})", CLIENT_NODE_ID)()
+                try:
+                    eel.set_terminal_id(CLIENT_NODE_ID)()
+                except Exception:
+                    pass
+
+                # Precargar estado inmediatamente para garantizar que la UI muestre la sesion activa
+                try:
+                    initial_data = fetch_initial_poll_data()
+                    if initial_data:
+                        eel.update_poll_state(initial_data)()
+                except Exception:
+                    pass
 
                 # Tarea de envio concurrente
                 async def sender_task():
@@ -154,9 +167,38 @@ def reset_session(poll_id):
         async_loop.call_soon_threadsafe(outbound_queue.put_nowait, action_payload)
 
 
+def fetch_initial_poll_data():
+    """Consulta directa a la API de Rails para precargar datos de inmediato."""
+    try:
+        http_url = WS_BACKEND_URL.replace("ws://", "http://").replace("wss://", "https://").replace("/cable", "/polls/1")
+        req = urllib.request.Request(http_url, headers={"User-Agent": "DecisionRoomClient"})
+        with urllib.request.urlopen(req, timeout=3) as resp:
+            if resp.status == 200:
+                data = json.loads(resp.read().decode("utf-8"))
+                return data
+    except Exception as e:
+        print(f"[HTTP] Consulta inicial de votacion: {e}")
+    return None
+
+
 @eel.expose
 def request_initial_state():
     """Solicitar estado inicial al cargar la pagina."""
+    # 1. Enviar el identificador del terminal para actualizar el badge gris
+    try:
+        eel.set_terminal_id(CLIENT_NODE_ID)()
+    except Exception:
+        pass
+
+    # 2. Precargar datos de la votacion inmediatamente via HTTP
+    poll_data = fetch_initial_poll_data()
+    if poll_data:
+        try:
+            eel.update_poll_state(poll_data)()
+        except Exception:
+            pass
+
+    # 3. Solicitar sincronizacion a traves del canal WebSocket
     action_payload = {
         "command": "message",
         "identifier": CHANNEL_IDENTIFIER,

@@ -13,14 +13,25 @@ const statusTextEl = document.getElementById("status-text");
 
 // 1. Funciones expuestas a Python via Eel (Server Push)
 
+eel.expose(set_terminal_id);
+function set_terminal_id(nodeId) {
+  const badgeEl = document.getElementById("terminal-badge");
+  if (badgeEl && nodeId) {
+    badgeEl.textContent = `Terminal ID: ${nodeId}`;
+  }
+}
+
 eel.expose(set_connection_status);
-function set_connection_status(isConnected, text) {
+function set_connection_status(isConnected, text, nodeId) {
   if (isConnected) {
     statusBadgeEl.className = "status-badge";
     statusTextEl.textContent = text || "Conectado a Rails / ActionCable";
   } else {
     statusBadgeEl.className = "status-badge disconnected";
     statusTextEl.textContent = text || "Desconectado (Reconectando...)";
+  }
+  if (nodeId) {
+    set_terminal_id(nodeId);
   }
 }
 
@@ -122,6 +133,9 @@ function disableVoteButtons() {
   const buttons = document.querySelectorAll(".vote-btn");
   buttons.forEach(btn => {
     btn.disabled = true;
+    if (!btn.dataset.origText) {
+      btn.dataset.origText = btn.textContent;
+    }
     btn.textContent = "Voto Registrado";
   });
 }
@@ -130,13 +144,21 @@ function enableVoteButtons() {
   const buttons = document.querySelectorAll(".vote-btn");
   buttons.forEach(btn => {
     btn.disabled = false;
-    btn.textContent = "Emitir Voto";
+    if (btn.dataset.origText) {
+      btn.textContent = btn.dataset.origText;
+    }
   });
+}
+
+function requestInitialData() {
+  if (window.eel && typeof eel.request_initial_state === "function") {
+    eel.request_initial_state()();
+  }
 }
 
 // Al cargar el documento, solicitar datos iniciales a Python
 document.addEventListener("DOMContentLoaded", () => {
-  if (window.eel) {
-    eel.request_initial_state()();
-  }
+  requestInitialData();
+  setTimeout(requestInitialData, 300);
+  setTimeout(requestInitialData, 1000);
 });

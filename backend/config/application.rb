@@ -18,11 +18,7 @@ module DecisionRoomBackend
     # Modo API pura
     config.api_only = true
 
-    # Autocarga de las capas de Clean Architecture
-    config.autoload_paths << Rails.root.join("app/core")
-    config.autoload_paths << Rails.root.join("app/core/entities")
-    config.autoload_paths << Rails.root.join("app/core/use_cases")
-    config.autoload_paths << Rails.root.join("app/infrastructure")
-    config.autoload_paths << Rails.root.join("app/infrastructure/repositories")
+    # Rails 7 autocarga automaticamente todo lo contenido en app/
+    # (app/core/... -> Core::... y app/infrastructure/... -> Infrastructure::...)
   end
 end

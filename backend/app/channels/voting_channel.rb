@@ -14,6 +14,8 @@ class VotingChannel < ApplicationCable::Channel
         data: results
       })
     end
+  rescue StandardError => e
+    Rails.logger.error("[VotingChannel] Error en subscribed: #{e.message}")
   end
 
   def unsubscribed
@@ -66,6 +68,8 @@ class VotingChannel < ApplicationCable::Channel
       event: "current_status",
       data: results
     })
+  rescue StandardError => e
+    Rails.logger.error("[VotingChannel] Error en request_status: #{e.message}")
   end
 
   # Accion para reiniciar la sesion de votacion (util para pruebas y demostraciones en vivo)
