@@ -53,6 +53,7 @@ Nota de prueba: Es posible abrir dos o más instancias de la aplicación de escr
 
 ---
 
-## Documentación Técnica
+## Documentación Técnica y Wiki Oficial
+* **Wiki Oficial del Proyecto en GitHub:** [https://github.com/KatheBravo/taller1-arqui-G3/wiki](https://github.com/KatheBravo/taller1-arqui-G3/wiki) (Documentación exhaustiva de cada archivo de código, capas de Clean Architecture, infraestructura y pruebas).
 * Documento de Arquitectura y Diseño: [docs/documentacion_tecnica/Documento_Tecnico_G3.md](docs/documentacion_tecnica/Documento_Tecnico_G3.md)
 * Referencias a la Documentación Oficial: [docs/documentacion_tecnica/Referencias_Documentacion_Oficial.md](docs/documentacion_tecnica/Referencias_Documentacion_Oficial.md)
