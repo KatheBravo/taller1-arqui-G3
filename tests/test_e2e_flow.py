@@ -43,16 +43,19 @@ async def run_websocket_e2e_tests():
         }
         await ws.send(json.dumps(subscribe_cmd))
 
-        # Esperar confirmacion
+        # Esperar confirmacion y estado inicial
         confirmed = False
         initial_state = None
-        for _ in range(3):
+        while not (confirmed and initial_state):
             msg = json.loads(await ws.recv())
+            if msg.get("type") == "ping":
+                continue
             if msg.get("type") == "confirm_subscription":
                 confirmed = True
                 print(" -> PASS: Suscripcion confirmada a 'VotingChannel'.")
-            elif msg.get("message", {}).get("event") == "session_state":
-                initial_state = msg["message"]["data"]
+            raw_payload = msg.get("message")
+            if isinstance(raw_payload, dict) and raw_payload.get("event") == "session_state":
+                initial_state = raw_payload["data"]
                 print(f" -> PASS: Estado inicial recibido: '{initial_state['poll']['title']}'")
 
         assert confirmed, "No se recibio confirmacion de suscripcion."
@@ -78,7 +81,8 @@ async def run_websocket_e2e_tests():
             msg = json.loads(await ws.recv())
             if msg.get("type") == "ping":
                 continue
-            payload = msg.get("message", {})
+            raw_payload = msg.get("message")
+            payload = raw_payload if isinstance(raw_payload, dict) else {}
             event = payload.get("event")
 
             if event == "vote_accepted":
@@ -108,7 +112,8 @@ async def run_websocket_e2e_tests():
             msg = json.loads(await ws.recv())
             if msg.get("type") == "ping":
                 continue
-            payload = msg.get("message", {})
+            raw_payload = msg.get("message")
+            payload = raw_payload if isinstance(raw_payload, dict) else {}
             if payload.get("event") == "vote_error":
                 duplicate_rejected = True
                 error_msg = payload.get("message")
@@ -136,7 +141,8 @@ async def run_websocket_e2e_tests():
             msg = json.loads(await ws.recv())
             if msg.get("type") == "ping":
                 continue
-            payload = msg.get("message", {})
+            raw_payload = msg.get("message")
+            payload = raw_payload if isinstance(raw_payload, dict) else {}
             if payload.get("event") == "vote_accepted":
                 voter_2_accepted = True
                 print(" -> PASS: Voto de segunda terminal aceptado exitosamente.")
@@ -158,7 +164,8 @@ async def run_websocket_e2e_tests():
             msg = json.loads(await ws.recv())
             if msg.get("type") == "ping":
                 continue
-            payload = msg.get("message", {})
+            raw_payload = msg.get("message")
+            payload = raw_payload if isinstance(raw_payload, dict) else {}
             if payload.get("event") == "results_updated":
                 totals = payload.get("totals", {})
                 if all(v == 0 for v in totals.values()):
