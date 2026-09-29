@@ -3,8 +3,15 @@
 .env.local
 
 # Rails & Ruby
-backend/tmp/
-backend/log/
+backend/tmp/*
+!backend/tmp/pids/
+!backend/tmp/cache/
+backend/tmp/pids/*
+!backend/tmp/pids/.keep
+backend/tmp/cache/*
+!backend/tmp/cache/.keep
+backend/log/*
+!backend/log/.keep
 backend/*.pid
 *.gem
 *.rbc

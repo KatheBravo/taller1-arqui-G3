@@ -33,5 +33,5 @@ begin
     })
   end
 rescue StandardError => e
-  Rails.logger.warn("Aviso al inicializar conexion con Redis: #{e.message}")
+  puts "[Redis Initializer] Aviso al inicializar conexion con Redis: #{e.message}"
 end

@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
     container_name: decisionroom_backend
     restart: unless-stopped
-    command: bundle exec puma -C config/puma.rb
+    command: sh -c "mkdir -p tmp/pids tmp/cache log && rm -f tmp/pids/server.pid && bundle exec puma -C config/puma.rb"
     ports:
       - "3000:3000"
     environment:
