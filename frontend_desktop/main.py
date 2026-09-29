@@ -183,32 +183,35 @@ if __name__ == "__main__":
     print(f" Servidor WebSocket: {WS_BACKEND_URL}")
     print("=======================================================")
 
-    # Iniciar la interfaz grafica con fallback automatico de navegadores
+    # Asignar puerto fijo y predecible: 8002 si es terminal B, 8001 para terminal A
+    app_port = int(os.getenv("PORT") or (8002 if "B" in CLIENT_NODE_ID or "2" in CLIENT_NODE_ID else 8001))
+    url = f"http://localhost:{app_port}/index.html"
+
+    print("=======================================================")
+    print(" DecisionRoom G3 - Terminal de Escritorio (Eel/Python)")
+    print(f" ID del Terminal: {CLIENT_NODE_ID}")
+    print(f" Servidor WebSocket: {WS_BACKEND_URL}")
+    print(f" Interfaz web disponible en:")
+    print(f" >>> {url} <<<")
+    print("=======================================================")
+
+    # Abrir automaticamente en el navegador de Ubuntu (Firefox o Chrome)
+    import webbrowser
+    def open_browser():
+        try:
+            webbrowser.open(url)
+        except Exception:
+            pass
+
+    threading.Timer(1.0, open_browser).start()
+
+    # Iniciar servidor Eel sin intentar invocar binarios externos incompatibles
     try:
-        # Intenta primero con Chrome o Edge
         eel.start(
             "index.html",
-            size=(960, 720),
-            port=0,
-            mode="chrome",
-            close_callback=lambda page, sockets: sys.exit(0)
+            host="localhost",
+            port=app_port,
+            mode=False
         )
-    except Exception:
-        try:
-            # Fallback a Edge si Chrome no esta disponible
-            eel.start(
-                "index.html",
-                size=(960, 720),
-                port=0,
-                mode="edge",
-                close_callback=lambda page, sockets: sys.exit(0)
-            )
-        except Exception:
-            # Fallback a cualquier navegador predeterminado
-            eel.start(
-                "index.html",
-                size=(960, 720),
-                port=0,
-                mode="default",
-                close_callback=lambda page, sockets: sys.exit(0)
-            )
+    except Exception as e:
+        print(f"[Eel] Error al iniciar servidor: {e}")
